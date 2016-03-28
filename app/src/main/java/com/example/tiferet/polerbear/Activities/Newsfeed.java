@@ -1,6 +1,8 @@
 package com.example.tiferet.polerbear.Activities;
 
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -18,15 +20,14 @@ import android.widget.TextView;
 
 import com.example.tiferet.polerbear.Classes.User;
 import com.example.tiferet.polerbear.Classes.UserDB;
+import com.example.tiferet.polerbear.Fragments.GlobalNewsfeedFragment;
 import com.example.tiferet.polerbear.R;
 
 import java.util.List;
 
-public class Newsfeed extends Activity {
+public class Newsfeed extends Activity implements GlobalNewsfeedFragment.GlobalNewsfeedFragmentDelegate{
 
-    List<User> users;
-    ProgressBar spinner;
-    ListView usersList;
+    GlobalNewsfeedFragment globalNewsfeedFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,56 +45,18 @@ public class Newsfeed extends Activity {
             }
         });*/
 
-        usersList = (ListView) findViewById(R.id.newsFeedList);
-        spinner = (ProgressBar) findViewById(R.id.spinner);
-        users = UserDB.getInstance().getAllUsers();
-        //spinner.setVisibility(View.VISIBLE);
-        NewsfeedAdapter adapter = new NewsfeedAdapter();
-        usersList.setAdapter(adapter);
-        spinner.setVisibility(View.GONE);
-
+        globalNewsfeedFragment = new GlobalNewsfeedFragment(); //(MyProfileFragment) getFragmentManager().findFragmentById(R.id.profileFragment);
+        globalNewsfeedFragment.setDelegate(this);
+        //stack.push(myProfileFragment);
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.add(R.id.newsfeedContainer, globalNewsfeedFragment);
+        ft.commit();
+        invalidateOptionsMenu();
     }
 
-    class NewsfeedAdapter extends BaseAdapter {
+    @Override
+    public void OnPersonalNewsfeed() {
 
-        public NewsfeedAdapter() {
-        }
-
-        @Override
-        public int getCount() { //returns the size of the list
-            return users.size();
-        }
-
-        @Override
-        public Object getItem(int position) { //returns the post
-            return users.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) { //returns post id
-            return position;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                LayoutInflater inflater = getLayoutInflater();
-                convertView = inflater.inflate(R.layout.newsfeed_single_row, null);
-            }
-            final TextView userName = (TextView) convertView.findViewById(R.id.userProfileName);
-            final TextView bookName = (TextView) convertView.findViewById(R.id.bookName);
-            final TextView bookReview = (TextView) convertView.findViewById(R.id.bookReview);
-            final ImageView stars = (ImageView) convertView.findViewById(R.id.stars);
-            final TextView page = (TextView) convertView.findViewById(R.id.pageTextView);
-            final TextView action = (TextView) convertView.findViewById(R.id.actionTextView);
-            final TextView action2 = (TextView) convertView.findViewById(R.id.action2TextView);
-            final ImageView userProfileImage = (ImageView) convertView.findViewById(R.id.userProfileImage);
-
-            User user = users.get(position);
-            userName.setText(user.getUserName());
-
-            return convertView;
-        }
     }
-
 }

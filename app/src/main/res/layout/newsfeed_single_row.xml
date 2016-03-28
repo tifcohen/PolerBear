@@ -1,116 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/outline">
-    <LinearLayout
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="5dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/username">
-        <ImageView
-            android:layout_marginRight="5dp"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:id="@+id/userProfileImage"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/ic_launcher"
-            android:focusable="false" />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
         <LinearLayout
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/username">
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text=""
+                android:text="username"
                 android:textStyle="bold"
-                android:id="@+id/userProfileName"
-                android:layout_toEndOf="@+id/userProfileImage"
+                android:id="@+id/otherUsername"
                 android:onClick="onClickUsername"
                 android:clickable="true"
                 android:textColor="@color/colorPrimaryDark"
                 android:focusable="false"/>
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text=""
-                    android:id="@+id/actionTextView"
-                    android:layout_toEndOf="@+id/userProfileImage"
-                    android:focusable="false"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:textStyle="bold"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text=""
-                    android:onClick="onClickBookname"
-                    android:clickable="true"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:id="@+id/bookName"
-                    android:focusable="false"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:id="@+id/action2TextView"/>
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/stars"
-                    android:focusable="false"
-                    android:adjustViewBounds="true"
-                    android:gravity="center_horizontal"
-                    android:maxWidth="70dp"
-                    android:minWidth="70dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text=""
-                    android:id="@+id/pageTextView"
-                    android:layout_toEndOf="@+id/userProfileImage"
-                    android:focusable="false"/>
-            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="5dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/bookInfo"
-        android:layout_below="@+id/username"
-        android:orientation="horizontal">
-    </LinearLayout>
-    <LinearLayout
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/bookInfo">
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="5dp"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:id="@+id/bookReview" />
-    </LinearLayout>
+            android:orientation="vertical"
+            android:layout_alignEnd="@+id/username"
+            android:id="@+id/trick">
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="trick"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:id="@+id/trickname"
+                android:clickable="true"
+                android:textColor="@color/colorPrimaryDark"
+                android:focusable="false"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="5dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignEnd="@+id/username"
+            android:id="@+id/levelSection">
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="level"
+                android:id="@+id/level"
+                android:clickable="true"
+                android:textColor="@color/colorPrimaryDark"
+                android:textAlignment="textEnd"
+                android:focusable="false"/>
+        </LinearLayout>
+    </RelativeLayout>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:id="@+id/trickVideo"
+        android:src="@drawable/placeholder" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/trickVideo"
+        android:layout_alignParentRight="true"
+        android:text="Teach me! >>"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_marginRight="10dp"/>
 </RelativeLayout>
