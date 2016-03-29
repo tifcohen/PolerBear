@@ -1,7 +1,7 @@
 package com.example.tiferet.polerbear.Fragments;
 
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +17,13 @@ import com.example.tiferet.polerbear.R;
 
 import java.util.List;
 
-public class GlobalNewsfeedFragment extends Fragment {
-    public interface GlobalNewsfeedFragmentDelegate{
-        void OnPersonalNewsfeed();
+public class PersonalNewsfeedFragment extends Fragment {
+    public interface PersonalNewsfeedFragmentDelegate{
+        void OnGlobalNewsfeed();
     }
 
-    GlobalNewsfeedFragmentDelegate delegate;
-    public void setDelegate(GlobalNewsfeedFragmentDelegate delegate){ this.delegate = delegate;}
+    PersonalNewsfeedFragmentDelegate delegate;
+    public void setDelegate(PersonalNewsfeedFragmentDelegate delegate){ this.delegate = delegate;}
 
     List<User> users;
     ProgressBar spinner;
@@ -45,7 +45,7 @@ public class GlobalNewsfeedFragment extends Fragment {
         return fragment;
     }
 */
-    public GlobalNewsfeedFragment() {
+    public PersonalNewsfeedFragment() {
         // Required empty public constructor
     }
 
@@ -58,11 +58,11 @@ public class GlobalNewsfeedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_global_newsfeed, container, false);
+        View view = inflater.inflate(R.layout.fragment_personal_newsfeed, container, false);
         usersList = (ListView) view.findViewById(R.id.newsFeedList);
         spinner = (ProgressBar) view.findViewById(R.id.spinner);
 
-        Toast.makeText(getActivity().getApplicationContext(), "Global", Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity().getApplicationContext(),"Personal", Toast.LENGTH_LONG).show();
 
         users = UserDB.getInstance().getAllUsers();
         spinner.setVisibility(View.VISIBLE);
@@ -137,7 +137,7 @@ public class GlobalNewsfeedFragment extends Fragment {
         public View getView(final int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 LayoutInflater inflater = getActivity().getLayoutInflater();
-                convertView = inflater.inflate(R.layout.global_newsfeed_single_row, null);
+                convertView = inflater.inflate(R.layout.personal_newsfeed_single_row, null);
             }
             final TextView userName = (TextView) convertView.findViewById(R.id.otherUsername);
             /*final TextView bookName = (TextView) convertView.findViewById(R.id.bookName);
