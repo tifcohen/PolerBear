@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import com.example.tiferet.polerbear.Classes.User;
 import com.example.tiferet.polerbear.R;
 
 public class Login extends AppCompatActivity {
@@ -73,5 +74,10 @@ public class Login extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onClickSignUp(View v){
+        Intent intent = new Intent(getApplicationContext(), SignUp.class);
+        startActivity(intent);
     }
 }

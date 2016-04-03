@@ -29,7 +29,7 @@ import com.example.tiferet.polerbear.R;
 
 import java.util.List;
 
-public class Newsfeed extends Activity implements GlobalNewsfeedFragment.GlobalNewsfeedFragmentDelegate, PersonalNewsfeedFragment.PersonalNewsfeedFragmentDelegate{
+public class Newsfeed extends AppCompatActivity implements GlobalNewsfeedFragment.GlobalNewsfeedFragmentDelegate, PersonalNewsfeedFragment.PersonalNewsfeedFragmentDelegate{
 
     String current;
     GlobalNewsfeedFragment globalNewsfeedFragment;
@@ -40,7 +40,7 @@ public class Newsfeed extends Activity implements GlobalNewsfeedFragment.GlobalN
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_newsfeed);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);
 
         current = "personal";
         personalNewsfeedFragment = new PersonalNewsfeedFragment();

@@ -4,7 +4,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo_m"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
         <activity
@@ -13,6 +13,7 @@
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -20,6 +21,10 @@
             android:name=".Activities.Newsfeed"
             android:label="@string/title_activity_newsfeed"
             android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".Activities.SignUp"
+            android:label="@string/sign_up">
         </activity>
     </application>
 
