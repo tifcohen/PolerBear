@@ -39,7 +39,6 @@ public class SignUpFragment extends Fragment {
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity().getApplicationContext(),"toast", Toast.LENGTH_LONG).show();
                 if(delegate!=null){
                     delegate.OnSignUp2();
                 }
