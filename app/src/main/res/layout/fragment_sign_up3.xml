@@ -1,0 +1,46 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.tiferet.polerbear.Fragments.SignUp3Fragment">
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        <TextView
+            android:id="@+id/levelText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/mark_your_level" />
+        <Spinner
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/levelText"
+            android:id="@+id/levelDropdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/btn_dropdown"
+            android:spinnerMode="dropdown"/>
+        <RelativeLayout
+            android:layout_below="@+id/levelDropdown"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/pickLevel"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pick the tricks you already know:"/>
+            <ListView
+                android:layout_below="@+id/pickLevel"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/trickListForRegistration"
+                android:drawSelectorOnTop="false"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="10.0sp">
+            </ListView>
+        </RelativeLayout>
+    </RelativeLayout>
+</FrameLayout>
