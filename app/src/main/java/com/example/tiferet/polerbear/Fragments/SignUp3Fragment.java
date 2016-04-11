@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -48,6 +49,7 @@ public class SignUp3Fragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sign_up3, container, false);
 
+        Button nextBtn = (Button) view.findViewById(R.id.nextBtn);
         final Spinner levelDropdown = (Spinner) view.findViewById(R.id.levelDropdown);
         final ArrayAdapter<String> levelAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, levelPicker);
         //levelDropdown.setAdapter(levelAdapter);
@@ -74,7 +76,14 @@ public class SignUp3Fragment extends Fragment {
             }
         });
 
-
+        nextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(delegate!=null){
+                    delegate.OnSignUp4();
+                }
+            }
+        });
         return view;
     }
 

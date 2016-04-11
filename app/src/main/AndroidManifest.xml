@@ -24,7 +24,12 @@
         </activity>
         <activity
             android:name=".Activities.SignUp"
-            android:label="@string/sign_up">
+            android:label="@string/sign_up" >
+        </activity>
+        <activity
+            android:name=".Activities.MyProfile"
+            android:label="@string/title_activity_my_profile"
+            android:theme="@style/AppTheme.NoActionBar" >
         </activity>
     </application>
 

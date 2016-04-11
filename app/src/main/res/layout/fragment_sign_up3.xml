@@ -23,9 +23,10 @@
             android:background="@android:drawable/btn_dropdown"
             android:spinnerMode="dropdown"/>
         <RelativeLayout
+            android:id="@+id/trickList"
             android:layout_below="@+id/levelDropdown"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="fill_parent">
             <TextView
                 android:id="@+id/pickLevel"
                 android:textAppearance="?android:attr/textAppearanceMedium"
@@ -35,12 +36,24 @@
             <ListView
                 android:layout_below="@+id/pickLevel"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="310dp"
                 android:id="@+id/trickListForRegistration"
                 android:drawSelectorOnTop="false"
                 android:divider="@android:color/transparent"
                 android:dividerHeight="10.0sp">
             </ListView>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent">
+            <Button
+                android:id="@+id/nextBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Next"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="0dp"/>
         </RelativeLayout>
     </RelativeLayout>
 </FrameLayout>
