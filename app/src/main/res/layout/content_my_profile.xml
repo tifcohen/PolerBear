@@ -80,11 +80,13 @@
         android:layout_height="wrap_content">
         <TableRow>
             <Button
+                android:id="@+id/btnNewsfeed"
                 android:layout_weight="1"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="Newsfeed"/>
             <Button
+                android:id="@+id/btnNewTrick"
                 android:layout_weight="1"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -92,11 +94,13 @@
         </TableRow>
         <TableRow>
             <Button
+                android:id="@+id/btnGallery"
                 android:layout_weight="1"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="Gallery"/>
             <Button
+                android:id="@+id/btnWarmup"
                 android:layout_weight="1"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
