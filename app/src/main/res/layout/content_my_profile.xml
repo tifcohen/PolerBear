@@ -68,7 +68,7 @@
         <ListView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/newsFeedList"
+            android:id="@+id/trickInProgressList"
             android:drawSelectorOnTop="false"
             android:divider="@android:color/transparent">
         </ListView>
