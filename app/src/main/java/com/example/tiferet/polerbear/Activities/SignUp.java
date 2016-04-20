@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.tiferet.polerbear.Fragments.SignUp2Fragment;
@@ -41,6 +42,24 @@ public class SignUp extends AppCompatActivity implements SignUpFragment.SignUpFr
         ft.add(R.id.signupContainer, signUpFragment);
         ft.commit();
         invalidateOptionsMenu();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        switch (item.getItemId()) { /// TODO!!!
+            case android.R.id.home:
+                FragmentManager fm = getFragmentManager();
+                if (fm.getBackStackEntryCount() > 0) {
+                    fm.popBackStack();
+                }
+                else{
+                    onBackPressed();
+                }
+                break;
+        }
+
+        return true;
     }
 
     @Override

@@ -5,8 +5,10 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.example.tiferet.polerbear.Fragments.WarmupFragment;
@@ -22,6 +24,10 @@ public class SingleTrick extends AppCompatActivity {
         setContentView(R.layout.activity_single_trick);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
 
         warmupFragment = new WarmupFragment();
         FragmentManager fm = getFragmentManager();
@@ -40,4 +46,21 @@ public class SingleTrick extends AppCompatActivity {
         });*/
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        switch (item.getItemId()) { /// TODO!!!
+            case android.R.id.home:
+                FragmentManager fm = getFragmentManager();
+                if (fm.getBackStackEntryCount() > 0) {
+                    fm.popBackStack();
+                }
+                else{
+                    onBackPressed();
+                }
+                break;
+        }
+
+        return true;
+    }
 }

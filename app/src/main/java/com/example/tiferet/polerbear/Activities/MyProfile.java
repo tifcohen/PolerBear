@@ -56,6 +56,15 @@ public class MyProfile extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Button btnNewsfeed = (Button) findViewById(R.id.btnNewsfeed);
+        btnNewsfeed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Newsfeed.class);
+                startActivity(intent);
+            }
+        });
     }
 
     class TricksInProgressAdapter extends BaseAdapter {
