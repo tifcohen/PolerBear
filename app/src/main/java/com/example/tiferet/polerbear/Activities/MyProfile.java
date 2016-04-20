@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -84,34 +85,30 @@ public class MyProfile extends AppCompatActivity {
         btnNewTrick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                        context);
-
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
                 // set title
                 alertDialogBuilder.setTitle("Add a new trick:");
-
                 // set dialog message
-                alertDialogBuilder
-                        .setMessage("Do you want to do it yourself or let us do it?")
-                        .setCancelable(false)
-                        .setPositiveButton("Do it!",new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
-                                Snackbar.make(v, "Do it!", Snackbar.LENGTH_LONG)
-                                        .setAction("Action", null).show();
+                alertDialogBuilder.setMessage("Do you want to do it yourself or let us do it?").setCancelable(false)
+                        .setPositiveButton("Do it!", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Snackbar.make(v, "Do it!", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                             }
                         })
-                        .setNegativeButton("I'll do it",new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
-                                Snackbar.make(v, "I'll do it", Snackbar.LENGTH_LONG)
-                                        .setAction("Action", null).show();
+                        .setNegativeButton("I'll do it", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Snackbar.make(v, "I'll do it", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                            }
+                        })
+                        .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Snackbar.make(v, "Cancel", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                             }
                         });
-
-                // create alert dialog
                 AlertDialog alertDialog = alertDialogBuilder.create();
-
-                // show it
                 alertDialog.show();
+                alertDialog.getWindow().setDimAmount(0.5f);
+                alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);;
             }
         });
     }
