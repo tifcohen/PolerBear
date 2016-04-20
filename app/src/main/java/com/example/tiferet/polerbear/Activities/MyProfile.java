@@ -1,5 +1,9 @@
 package com.example.tiferet.polerbear.Activities;
 
+import android.app.AlertDialog;
+
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -22,6 +26,7 @@ import java.util.List;
 
 public class MyProfile extends AppCompatActivity {
 
+    final Context context = this;
     List<Trick> tricks;
 
     @Override
@@ -63,6 +68,50 @@ public class MyProfile extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), Newsfeed.class);
                 startActivity(intent);
+            }
+        });
+
+        Button btnGallery = (Button) findViewById(R.id.btnGallery);
+        btnGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Gallery.class);
+                startActivity(intent);
+            }
+        });
+
+        Button btnNewTrick = (Button) findViewById(R.id.btnNewTrick);
+        btnNewTrick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                        context);
+
+                // set title
+                alertDialogBuilder.setTitle("Add a new trick:");
+
+                // set dialog message
+                alertDialogBuilder
+                        .setMessage("Do you want to do it yourself or let us do it?")
+                        .setCancelable(false)
+                        .setPositiveButton("Do it!",new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                Snackbar.make(v, "Do it!", Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null).show();
+                            }
+                        })
+                        .setNegativeButton("I'll do it",new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                Snackbar.make(v, "I'll do it", Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null).show();
+                            }
+                        });
+
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+
+                // show it
+                alertDialog.show();
             }
         });
     }
