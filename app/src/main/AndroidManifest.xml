@@ -41,6 +41,11 @@
             android:label="@string/title_activity_gallery"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
+        <activity
+            android:name=".Activities.Progress"
+            android:label="@string/title_activity_progress"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
     </application>
 
 </manifest>
