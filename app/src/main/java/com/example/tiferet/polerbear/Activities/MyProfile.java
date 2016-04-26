@@ -66,6 +66,15 @@ public class MyProfile extends AppCompatActivity {
             }
         });
 
+        Button btnEditProfile = (Button) findViewById(R.id.editProfile);
+        btnEditProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), EditProfile.class);
+                startActivity(intent);
+            }
+        });
+
         Button btnWarmup = (Button) findViewById(R.id.btnWarmup);
         btnWarmup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,11 +113,15 @@ public class MyProfile extends AppCompatActivity {
                 alertDialogBuilder.setMessage("Do you want to do it yourself or let us do it?").setCancelable(false)
                         .setPositiveButton("Do it!", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+                                Intent intent = new Intent(getApplicationContext(), NewTrick.class);
+                                startActivity(intent);
                                 Snackbar.make(v, "Do it!", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                             }
                         })
                         .setNegativeButton("I'll do it", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+                                Intent intent = new Intent(getApplicationContext(), NewTrick.class);
+                                startActivity(intent);
                                 Snackbar.make(v, "I'll do it", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                             }
                         })

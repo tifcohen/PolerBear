@@ -17,14 +17,21 @@
                 android:layout_height="wrap_content"
                 android:text="trick name"
                 android:id="@+id/trickName"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                />
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+            <TextView
+                android:layout_centerInParent="true"
+                android:layout_marginTop="7dp"
+                android:layout_marginBottom="6dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="trick level"
+                android:id="@+id/trickLevel"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
             <Button
                 android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Remind Me >>"
-                />
+                android:text="Update progress"/>
         </RelativeLayout>
         <LinearLayout
             android:layout_below="@+id/trickDetails"
@@ -50,17 +57,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <TableRow>
-               <Button
-                    android:layout_weight="1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Update progress"/>
                 <Button
                     android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Mark as Done"/>
-=            </TableRow>
+                <Button
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Remind Me" />
+            </TableRow>
         </TableLayout>
     </RelativeLayout>
 </FrameLayout>

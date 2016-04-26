@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="60dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:id="@+id/joinInfo">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/userFName"
+                    android:text="First Name: "
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textAlignment="textStart"/>
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editUserFName"
+                    android:textAlignment="textEnd"/>
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/newUserLName"
+                    android:text="Last Name: "
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textAlignment="textStart"/>
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editUserLName"
+                    android:textAlignment="textEnd"/>
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/userBirthDate"
+                    android:text="Birth Date: "
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textAlignment="textStart"/>
+                <com.example.tiferet.polerbear.Picker.Date.DateEditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editUserBirthDate"
+                    android:textAlignment="textEnd"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/profilePic"
+                    android:text="Set Profile Picture: "
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textAlignment="textStart"/>
+                <ImageView
+                    android:id="@+id/editProfileImage"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/male" />
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:id="@+id/addProfilePic"
+                    android:textAlignment="textEnd"/>
+            </LinearLayout>
+        <RelativeLayout
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="40dp"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/joinInfo">
+            <Button
+                android:layout_alignParentBottom="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/cancelBtn"
+                android:textAlignment="center"
+                android:text="Cancel"
+                android:layout_alignParentLeft="true" />
+            <Button
+                android:layout_alignParentBottom="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/saveEditUserBtn"
+                android:textAlignment="center"
+                android:layout_alignParentRight="true"
+                android:text="Save" />
+        </RelativeLayout>
+    </LinearLayout>
+</RelativeLayout>
