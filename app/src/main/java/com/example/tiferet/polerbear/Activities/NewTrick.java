@@ -34,8 +34,8 @@ public class NewTrick extends AppCompatActivity {
         VideoView trickVid = (VideoView) findViewById(R.id.trickVideo);
         trickVid.setVisibility(View.GONE);
 /*
-        LinearLayout lt = (LinearLayout) findViewById(R.id.linearLayout);
         for(int i=0; i<10; i++) {
+            LinearLayout lt = (LinearLayout) findViewById(R.id.linearLayout);
             TextView tv = (TextView) getLayoutInflater().inflate(R.layout.content_new_trick, lt);
             tv.setText(i+"");
             lt.addView(tv);

@@ -1,5 +1,6 @@
 package com.example.tiferet.polerbear.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.tiferet.polerbear.Activities.MyProfile;
 import com.example.tiferet.polerbear.Classes.User;
 import com.example.tiferet.polerbear.Classes.UserDB;
 import com.example.tiferet.polerbear.R;
@@ -20,6 +22,7 @@ import java.util.List;
 public class GlobalNewsfeedFragment extends Fragment {
     public interface GlobalNewsfeedFragmentDelegate{
         void OnPersonalNewsfeed();
+        void onClickUsername(View v);
     }
 
     GlobalNewsfeedFragmentDelegate delegate;
@@ -29,22 +32,6 @@ public class GlobalNewsfeedFragment extends Fragment {
     ProgressBar spinner;
     ListView usersList;
 
-    // TODO: Rename and change types of parameters
-    //private String mParam1;
-    //private String mParam2;
-
-    //private OnFragmentInteractionListener mListener;
-
-    // TODO: Rename and change types and number of parameters
-    /*public static GlobalNewsfeedFragment newInstance(String param1, String param2) {
-        GlobalNewsfeedFragment fragment = new GlobalNewsfeedFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-*/
     public GlobalNewsfeedFragment() {
         // Required empty public constructor
     }
@@ -71,6 +58,8 @@ public class GlobalNewsfeedFragment extends Fragment {
         spinner.setVisibility(View.GONE);
 
         return view;
+
+
     }
 
     class NewsfeedAdapter extends BaseAdapter {

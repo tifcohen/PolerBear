@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -78,6 +79,15 @@ public class Newsfeed extends AppCompatActivity implements GlobalNewsfeedFragmen
         ft.hide(globalNewsfeedFragment);
         ft.commit();
         invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onClickUsername(View v) {
+        User user = (User) v.getTag();
+        Intent intent = new Intent(getApplicationContext(), MyProfile.class);
+        intent.putExtra("fragment", "user");
+        intent.putExtra("userId", user.getUserId());
+        startActivity(intent);
     }
 
     @Override

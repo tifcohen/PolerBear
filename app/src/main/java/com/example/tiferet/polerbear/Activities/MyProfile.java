@@ -18,12 +18,15 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.tiferet.polerbear.Classes.Trick;
 import com.example.tiferet.polerbear.Classes.TrickDB;
 import com.example.tiferet.polerbear.R;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
+import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
 import java.util.List;
 
@@ -58,13 +61,29 @@ public class MyProfile extends AppCompatActivity {
         });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.setImageResource(R.drawable.logo_m);
+
+        SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
+        ImageView itemIcon1 = new ImageView(this);
+        ImageView itemIcon2 = new ImageView(this);
+        ImageView itemIcon3 = new ImageView(this);
+        ImageView itemIcon4 = new ImageView(this);
+
+        itemIcon1.setImageResource(R.drawable.newsfeed_icon);
+        itemIcon2.setImageResource(R.drawable.warmup_icon);
+        itemIcon3.setImageResource(R.drawable.gallery_icon);
+        itemIcon4.setImageResource(R.drawable.add_new_trick);
+
+        SubActionButton btnNewsfeed = itemBuilder.setContentView(itemIcon1).build();
+        SubActionButton btnWarmup = itemBuilder.setContentView(itemIcon2).build();
+        SubActionButton btnGallery = itemBuilder.setContentView(itemIcon3).build();
+        SubActionButton btnNewTrick = itemBuilder.setContentView(itemIcon4).build();
+
+        FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
+                .addSubActionView(btnNewsfeed).addSubActionView(btnWarmup).addSubActionView(btnGallery).addSubActionView(btnNewTrick)
+                .attachTo(fab)
+                .build();
+
 
         Button btnEditProfile = (Button) findViewById(R.id.editProfile);
         btnEditProfile.setOnClickListener(new View.OnClickListener() {
@@ -75,7 +94,6 @@ public class MyProfile extends AppCompatActivity {
             }
         });
 
-        Button btnWarmup = (Button) findViewById(R.id.btnWarmup);
         btnWarmup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,7 +102,6 @@ public class MyProfile extends AppCompatActivity {
             }
         });
 
-        Button btnNewsfeed = (Button) findViewById(R.id.btnNewsfeed);
         btnNewsfeed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,7 +110,6 @@ public class MyProfile extends AppCompatActivity {
             }
         });
 
-        Button btnGallery = (Button) findViewById(R.id.btnGallery);
         btnGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,7 +118,6 @@ public class MyProfile extends AppCompatActivity {
             }
         });
 
-        Button btnNewTrick = (Button) findViewById(R.id.btnNewTrick);
         btnNewTrick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
