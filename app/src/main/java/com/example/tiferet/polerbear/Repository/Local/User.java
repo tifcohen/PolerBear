@@ -1,4 +1,4 @@
-package com.example.tiferet.polerbear.Classes;
+package com.example.tiferet.polerbear.Repository.Local;
 
 /**
  * Created by TIFERET on 27-Mar-16.

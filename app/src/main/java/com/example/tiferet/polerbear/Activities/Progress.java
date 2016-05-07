@@ -10,11 +10,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.example.tiferet.polerbear.Fragments.PersonalNewsfeedFragment;
 import com.example.tiferet.polerbear.Fragments.ProgressFragment;
 import com.example.tiferet.polerbear.R;
 
-public class Progress extends AppCompatActivity implements ProgressFragment.ProgressFragmentDeleate{
+public class Progress extends AppCompatActivity implements ProgressFragment.ProgressFragmentDelegate{
 
     ProgressFragment progressFragment;
     String current;

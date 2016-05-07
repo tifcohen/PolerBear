@@ -15,10 +15,8 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.tiferet.polerbear.Classes.Trick;
-import com.example.tiferet.polerbear.Classes.TrickDB;
-import com.example.tiferet.polerbear.Classes.User;
-import com.example.tiferet.polerbear.Classes.UserDB;
+import com.example.tiferet.polerbear.Repository.Local.Trick;
+import com.example.tiferet.polerbear.Repository.Local.TrickDB;
 import com.example.tiferet.polerbear.R;
 
 import java.util.List;

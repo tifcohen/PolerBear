@@ -1,8 +1,7 @@
 package com.example.tiferet.polerbear.Fragments;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +11,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.tiferet.polerbear.Activities.MyProfile;
-import com.example.tiferet.polerbear.Classes.User;
-import com.example.tiferet.polerbear.Classes.UserDB;
 import com.example.tiferet.polerbear.R;
+import com.example.tiferet.polerbear.Repository.Local.User;
+import com.example.tiferet.polerbear.Repository.Local.UserDB;
 
 import java.util.List;
 

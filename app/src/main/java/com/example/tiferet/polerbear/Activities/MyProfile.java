@@ -22,8 +22,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.tiferet.polerbear.Classes.Trick;
-import com.example.tiferet.polerbear.Classes.TrickDB;
+import com.example.tiferet.polerbear.Repository.Local.Trick;
+import com.example.tiferet.polerbear.Repository.Local.TrickDB;
 import com.example.tiferet.polerbear.R;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
@@ -61,7 +61,7 @@ public class MyProfile extends AppCompatActivity {
         });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setImageResource(R.drawable.logo_m);
+        fab.setImageResource(R.drawable.logo_transparent);
 
         SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
         ImageView itemIcon1 = new ImageView(this);

@@ -1,9 +1,7 @@
 package com.example.tiferet.polerbear.Fragments;
 
-import android.app.Activity;
-import android.net.Uri;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,23 +9,22 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.tiferet.polerbear.Activities.Progress;
-import com.example.tiferet.polerbear.Classes.Trick;
-import com.example.tiferet.polerbear.Classes.TrickDB;
 import com.example.tiferet.polerbear.R;
+import com.example.tiferet.polerbear.Repository.Local.Trick;
+import com.example.tiferet.polerbear.Repository.Local.TrickDB;
 
 import java.util.List;
 
 public class ProgressFragment extends Fragment {
-    public interface ProgressFragmentDeleate{
+    public interface ProgressFragmentDelegate {
         void OnUpdateProgress();
     }
 
     Trick thisTrick;
     List<Trick> tricks;
     ListView trickList;
-    ProgressFragmentDeleate delegate;
-    public void setDelegate(ProgressFragmentDeleate delegate){this.delegate = delegate;}
+    ProgressFragmentDelegate delegate;
+    public void setDelegate(ProgressFragmentDelegate delegate){this.delegate = delegate;}
 
     public ProgressFragment() {
         // Required empty public constructor

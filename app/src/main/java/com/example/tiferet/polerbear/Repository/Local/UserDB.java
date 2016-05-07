@@ -1,4 +1,4 @@
-package com.example.tiferet.polerbear.Classes;
+package com.example.tiferet.polerbear.Repository.Local;
 
 import java.util.LinkedList;
 import java.util.List;

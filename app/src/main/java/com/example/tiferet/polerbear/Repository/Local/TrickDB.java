@@ -1,4 +1,4 @@
-package com.example.tiferet.polerbear.Classes;
+package com.example.tiferet.polerbear.Repository.Local;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -9,6 +9,7 @@ import java.util.List;
 public class TrickDB {
     private final static TrickDB instance = new TrickDB();
     List<Trick> db = new LinkedList<Trick>();
+
 
     private TrickDB() {
         init();
