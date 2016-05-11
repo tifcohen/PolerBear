@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.example.tiferet.polerbear.R;
+import com.example.tiferet.polerbear.Repository.Server.Repository;
+import com.example.tiferet.polerbear.Repository.Server.Trick;
 
 public class Login extends AppCompatActivity {
 
@@ -28,6 +30,8 @@ public class Login extends AppCompatActivity {
         //actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
 
+        Repository test = new Repository();
+        Trick trick = test.foo();
 
         Button login = (Button) findViewById(R.id.loginBtn);
         final ProgressBar loginPB = (ProgressBar) findViewById(R.id.progressBar);
