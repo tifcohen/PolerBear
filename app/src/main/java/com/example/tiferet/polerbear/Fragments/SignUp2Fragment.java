@@ -1,11 +1,8 @@
 package com.example.tiferet.polerbear.Fragments;
 
-import android.app.Activity;
-import android.net.Uri;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -13,9 +10,16 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 import com.example.tiferet.polerbear.R;
+import com.example.tiferet.polerbear.Repository.Server.User;
 
 
 public class SignUp2Fragment extends Fragment {
+
+    private User user;
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public interface SignUp2FragmentDelegate{
         void OnSignUp3();

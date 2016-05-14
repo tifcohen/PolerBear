@@ -1,23 +1,32 @@
 package com.example.tiferet.polerbear.Fragments;
 
-import android.app.Activity;
-import android.net.Uri;
-import android.nfc.NfcEvent;
-import android.os.Bundle;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.EditText;
 
+import com.example.tiferet.polerbear.API.IUserAPI;
 import com.example.tiferet.polerbear.R;
+import com.example.tiferet.polerbear.Repository.Server.Repository;
+import com.example.tiferet.polerbear.Repository.Server.User;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SignUpFragment extends Fragment {
     public interface SignUpFragmentDelegate{
-        void OnSignUp2();
+        void OnSignUp2(User user);
+        void OnCancel();
     }
 
+    User newUser;
     private SignUpFragmentDelegate delegate;
     public void setDelegate(SignUpFragmentDelegate delegate){this.delegate = delegate;}
 
@@ -34,17 +43,72 @@ public class SignUpFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
+
         Button nextBtn = (Button) view.findViewById(R.id.nextBtn);
+        Button cancelBtn = (Button) view.findViewById(R.id.cancelBtn);
+        final EditText user = (EditText) view.findViewById(R.id.join1UsernameEditText);
+        final EditText pwd = (EditText) view.findViewById(R.id.join1PasswordEditText);
+        final EditText repwd = (EditText) view.findViewById(R.id.join1RepeatPasswordEditText);
+
+        IUserAPI api = Repository.getInstance().retrofit.create(IUserAPI.class);
+        final Call<Boolean> call = api.isExisted(user.getText().toString(),"michaelkolet@gmail.com",pwd.getText().toString());
 
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(delegate!=null){
-                    delegate.OnSignUp2();
+                if (pwd.getText().toString().equals(repwd.getText().toString())) {
+                    call.enqueue(new Callback<Boolean>() {
+                        @Override
+                        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                            if (!response.body()){
+                                if (delegate != null) {
+                                    newUser = new User();
+                                    newUser.setUserName(user.getText().toString());
+                                    newUser.setUserPwd(pwd.getText().toString());
+                                    delegate.OnSignUp2(newUser);
+                                }
+                            }
+                            else{
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                                alertDialogBuilder.setTitle("Action Failed");
+                                alertDialogBuilder.setMessage("A user with that name is already exists").setCancelable(false)
+                                        .setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                            }
+                                        });
+                                AlertDialog alertDialog = alertDialogBuilder.create();
+                                alertDialog.show();
+                                alertDialog.getWindow().setDimAmount(0.5f);
+                                alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<Boolean> call, Throwable t) {
+                        }
+                    });
                 }
+                else{
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                    alertDialogBuilder.setTitle("Action Failed");
+                    alertDialogBuilder.setMessage("Passwords don't match").setCancelable(false)
+                            .setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                }
+                            });
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+                    alertDialog.getWindow().setDimAmount(0.5f);
+                    alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+                }
+            }
+        });
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                delegate.OnCancel();
             }
         });
         return view;
     }
-
 }
