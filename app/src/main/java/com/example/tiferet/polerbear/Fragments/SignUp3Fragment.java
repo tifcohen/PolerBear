@@ -17,12 +17,20 @@ import android.widget.Toast;
 import com.example.tiferet.polerbear.R;
 import com.example.tiferet.polerbear.Repository.Local.Trick;
 import com.example.tiferet.polerbear.Repository.Local.TrickDB;
+import com.example.tiferet.polerbear.Repository.Server.User;
 
 import java.util.List;
 
 public class SignUp3Fragment extends Fragment {
+    private User user;
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public interface SignUp3FragmentDelegate{
-        void OnSignUp4();
+        void OnSignUp4(User user);
+        void OnCancel();
     }
 
     SignUp3FragmentDelegate delegate;
@@ -46,6 +54,7 @@ public class SignUp3Fragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_sign_up3, container, false);
 
         Button nextBtn = (Button) view.findViewById(R.id.nextBtn);
+        Button cancelBtn = (Button) view.findViewById(R.id.cancelBtn);
         final Spinner levelDropdown = (Spinner) view.findViewById(R.id.levelDropdown);
         final ArrayAdapter<String> levelAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, levelPicker);
         //levelDropdown.setAdapter(levelAdapter);
@@ -75,9 +84,16 @@ public class SignUp3Fragment extends Fragment {
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(delegate!=null){
-                    delegate.OnSignUp4();
+                if (delegate != null) {
+                    delegate.OnSignUp4(user);
                 }
+            }
+        });
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                delegate.OnCancel();
             }
         });
         return view;
