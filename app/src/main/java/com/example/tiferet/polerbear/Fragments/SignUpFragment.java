@@ -56,7 +56,20 @@ public class SignUpFragment extends Fragment {
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (pwd.getText().toString().equals(repwd.getText().toString())) {
+                if(user.getText().toString().equals("") || pwd.getText().toString().equals("")){
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                    alertDialogBuilder.setTitle("Action Failed");
+                    alertDialogBuilder.setMessage("Please fill the requested fields").setCancelable(false)
+                            .setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                }
+                            });
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+                    alertDialog.getWindow().setDimAmount(0.5f);
+                    alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+                }
+                else if (pwd.getText().toString().equals(repwd.getText().toString())) {
                     call.enqueue(new Callback<Boolean>() {
                         @Override
                         public void onResponse(Call<Boolean> call, Response<Boolean> response) {
@@ -72,7 +85,7 @@ public class SignUpFragment extends Fragment {
                                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                                 alertDialogBuilder.setTitle("Action Failed");
                                 alertDialogBuilder.setMessage("A user with that name is already exists").setCancelable(false)
-                                        .setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
+                                        .setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
                                             }
                                         });
@@ -91,7 +104,7 @@ public class SignUpFragment extends Fragment {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                     alertDialogBuilder.setTitle("Action Failed");
                     alertDialogBuilder.setMessage("Passwords don't match").setCancelable(false)
-                            .setNeutralButton("Dismiss", new DialogInterface.OnClickListener() {
+                            .setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                 }
                             });
