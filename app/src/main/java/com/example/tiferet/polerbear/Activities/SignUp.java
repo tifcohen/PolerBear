@@ -76,9 +76,10 @@ public class SignUp extends AppCompatActivity implements SignUpFragment.SignUpFr
     }
 
     @Override
-    public void OnSignUp3() {
+    public void OnSignUp3(User user) {
         signUp3Fragment = new SignUp3Fragment();
         signUp3Fragment.setDelegate(this);
+        signUp3Fragment.setUser(user);
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.add(R.id.signupContainer, signUp3Fragment);
@@ -88,9 +89,10 @@ public class SignUp extends AppCompatActivity implements SignUpFragment.SignUpFr
     }
 
     @Override
-    public void OnSignUp4() {
+    public void OnSignUp4(User user) {
         signUp4Fragment = new SignUp4Fragment();
         signUp4Fragment.setDelegate(this);
+        signUp4Fragment.setUser(user);
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.add(R.id.signupContainer, signUp4Fragment);
