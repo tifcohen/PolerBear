@@ -8,8 +8,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.tiferet.polerbear.R;
+import com.example.tiferet.polerbear.Repository.Server.User;
 
 public class SignUp4Fragment extends Fragment {
+    private User user;
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public interface SignUp4FragmentDelegate {
        void OnMyProfile();
    }
