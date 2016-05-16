@@ -50,12 +50,13 @@ public class SignUpFragment extends Fragment {
         final EditText pwd = (EditText) view.findViewById(R.id.join1PasswordEditText);
         final EditText repwd = (EditText) view.findViewById(R.id.join1RepeatPasswordEditText);
 
-        IUserAPI api = Repository.getInstance().retrofit.create(IUserAPI.class);
-        final Call<Boolean> call = api.isExisted(user.getText().toString(),"michaelkolet@gmail.com",pwd.getText().toString());
+        final IUserAPI api = Repository.getInstance().retrofit.create(IUserAPI.class);
+
 
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final Call<Boolean> call = api.isExisted(user.getText().toString(),"michaelkolet@gmail.com",pwd.getText().toString());
                 if(user.getText().toString().equals("") || pwd.getText().toString().equals("")){
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                     alertDialogBuilder.setTitle("Action Failed");
