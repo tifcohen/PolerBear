@@ -46,7 +46,7 @@ public class User {
     /**
      *
      * @return
-     *     The userId
+     * The userId
      */
     @JsonProperty("userId")
     public Integer getUserId() {
@@ -56,7 +56,7 @@ public class User {
     /**
      *
      * @param userId
-     *     The userId
+     * The userId
      */
     @JsonProperty("userId")
     public void setUserId(Integer userId) {
@@ -66,7 +66,7 @@ public class User {
     /**
      *
      * @return
-     *     The userName
+     * The userName
      */
     @JsonProperty("userName")
     public String getUserName() {
@@ -76,7 +76,7 @@ public class User {
     /**
      *
      * @param userName
-     *     The userName
+     * The userName
      */
     @JsonProperty("userName")
     public void setUserName(String userName) {
@@ -86,7 +86,7 @@ public class User {
     /**
      *
      * @return
-     *     The userPwd
+     * The userPwd
      */
     @JsonProperty("userPwd")
     public String getUserPwd() {
@@ -96,7 +96,7 @@ public class User {
     /**
      *
      * @param userPwd
-     *     The userPwd
+     * The userPwd
      */
     @JsonProperty("userPwd")
     public void setUserPwd(String userPwd) {
@@ -106,7 +106,7 @@ public class User {
     /**
      *
      * @return
-     *     The userEmail
+     * The userEmail
      */
     @JsonProperty("userEmail")
     public String getUserEmail() {
@@ -116,7 +116,7 @@ public class User {
     /**
      *
      * @param userEmail
-     *     The userEmail
+     * The userEmail
      */
     @JsonProperty("userEmail")
     public void setUserEmail(String userEmail) {
@@ -126,7 +126,7 @@ public class User {
     /**
      *
      * @return
-     *     The userBirthDate
+     * The userBirthDate
      */
     @JsonProperty("userBirthDate")
     public String getUserBirthDate() {
@@ -136,7 +136,7 @@ public class User {
     /**
      *
      * @param userBirthDate
-     *     The userBirthDate
+     * The userBirthDate
      */
     @JsonProperty("userBirthDate")
     public void setUserBirthDate(String userBirthDate) {
@@ -146,7 +146,7 @@ public class User {
     /**
      *
      * @return
-     *     The userLevel
+     * The userLevel
      */
     @JsonProperty("userLevel")
     public Integer getUserLevel() {
@@ -156,7 +156,7 @@ public class User {
     /**
      *
      * @param userLevel
-     *     The userLevel
+     * The userLevel
      */
     @JsonProperty("userLevel")
     public void setUserLevel(Integer userLevel) {
@@ -166,7 +166,7 @@ public class User {
     /**
      *
      * @return
-     *     The userSex
+     * The userSex
      */
     @JsonProperty("userSex")
     public String getUserSex() {
@@ -176,7 +176,7 @@ public class User {
     /**
      *
      * @param userSex
-     *     The userSex
+     * The userSex
      */
     @JsonProperty("userSex")
     public void setUserSex(String userSex) {
