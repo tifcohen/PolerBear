@@ -1,10 +1,13 @@
 package com.example.tiferet.polerbear.Fragments;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -61,11 +64,26 @@ public class SignUp2Fragment extends Fragment {
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (delegate != null) {
-                    user.setUserEmail(email.getText().toString());
-                    user.setUserBirthDate(birthdate.getText().toString());
-                    user.setUserSex(sexDropdown.getSelectedItem().toString());
-                    delegate.OnSignUp3(user);
+                if(!isEmailValid(email.getText())){
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+                    alertDialogBuilder.setTitle("Action Failed");
+                    alertDialogBuilder.setMessage("Please enter a valid email").setCancelable(false)
+                            .setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                }
+                            });
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+                    alertDialog.getWindow().setDimAmount(0.5f);
+                    alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+                }
+                else {
+                    if (delegate != null) {
+                        user.setUserEmail(email.getText().toString());
+                        user.setUserBirthDate(birthdate.getText().toString());
+                        user.setUserSex(sexDropdown.getSelectedItem().toString());
+                        delegate.OnSignUp3(user);
+                    }
                 }
             }
         });
@@ -79,4 +97,9 @@ public class SignUp2Fragment extends Fragment {
 
         return view;
     }
+
+    boolean isEmailValid(CharSequence email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
 }
