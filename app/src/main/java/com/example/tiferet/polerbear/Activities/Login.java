@@ -1,5 +1,7 @@
 package com.example.tiferet.polerbear.Activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -8,10 +10,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import com.example.tiferet.polerbear.API.IUserAPI;
 import com.example.tiferet.polerbear.R;
+import com.example.tiferet.polerbear.Repository.Server.Repository;
+import com.example.tiferet.polerbear.Repository.Server.User;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Login extends AppCompatActivity {
 
@@ -28,6 +39,10 @@ public class Login extends AppCompatActivity {
         //actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
 
+        final IUserAPI api = Repository.getInstance().retrofit.create(IUserAPI.class);
+        final EditText username = (EditText) findViewById(R.id.userLogin);
+        final EditText pwd = (EditText) findViewById(R.id.pswLogin);
+
         Button login = (Button) findViewById(R.id.loginBtn);
         final ProgressBar loginPB = (ProgressBar) findViewById(R.id.progressBar);
         loginPB.setVisibility(View.GONE);
@@ -36,9 +51,36 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 loginPB.setVisibility(View.VISIBLE);
-                Intent intent = new Intent(getApplicationContext(), Newsfeed.class);
-                startActivity(intent);
-                finish();
+                if(username.getText().toString().equals("")||pwd.getText().toString().equals("")){
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getApplicationContext());
+                    alertDialogBuilder.setTitle("Action Failed");
+                    alertDialogBuilder.setMessage("Please fill the requested fields").setCancelable(false)
+                            .setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                }
+                            });
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+                    alertDialog.getWindow().setDimAmount(0.5f);
+                    alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+                }
+                else {
+                    final Call<User> call = api.Login(username.getText().toString(), pwd.getText().toString());
+                    call.enqueue(new Callback<User>() {
+                        @Override
+                        public void onResponse(Call<User> call, Response<User> response) {
+                            User user = response.body();
+                        }
+
+                        @Override
+                        public void onFailure(Call<User> call, Throwable t) {
+
+                        }
+                    });
+                    Intent intent = new Intent(getApplicationContext(), Newsfeed.class);
+                    startActivity(intent);
+                    finish();
+                }
             }
         });
 
