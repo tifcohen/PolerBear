@@ -1,7 +1,6 @@
 package com.example.tiferet.polerbear.Activities;
 
 import android.app.AlertDialog;
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,18 +21,21 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.tiferet.polerbear.R;
 import com.example.tiferet.polerbear.Repository.Local.Trick;
 import com.example.tiferet.polerbear.Repository.Local.TrickDB;
-import com.example.tiferet.polerbear.R;
+import com.example.tiferet.polerbear.Repository.Server.SessionManager;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class MyProfile extends AppCompatActivity {
 
     final Context context = this;
     List<Trick> tricks;
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +44,17 @@ public class MyProfile extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final ListView trickList = (ListView) findViewById(R.id.trickInProgressList);
+        session = new SessionManager(getApplicationContext());
+        session.checkLogin();
+        HashMap<String, String> user = session.getUserDetails();
 
+        TextView username = (TextView) findViewById(R.id.myProfileUsername);
+        TextView userLevel = (TextView) findViewById(R.id.myProfileLevelView);
+
+        username.setText(user.get(SessionManager.KEY_NAME));
+        userLevel.setText(user.get(SessionManager.KEY_LEVEL));
+
+        final ListView trickList = (ListView) findViewById(R.id.trickInProgressList);
         tricks = TrickDB.getInstance().getAllTricks();
         //spinner.setVisibility(View.VISIBLE);
         TricksInProgressAdapter adapter = new TricksInProgressAdapter();

@@ -16,7 +16,7 @@ public interface IUserAPI {
     Call<User> Login(@Query("user") String user, @Query("pwd") String pwd);
     //193.106.55.28:443/isExisted?user=michael&email=michaelkolet@gmail.com&pwd=1234
     @GET("/isExisted")
-    Call<Boolean> isExisted(@Query("user") String user, @Query("email") String email, @Query("pwd") String pwd);
+    Call<Boolean> isExisted(@Query("user") String user, @Query("pwd") String pwd);
 
     //193.106.55.28:443/Login?user=michael&password=1234
 }

@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".Activities.Login"
+            android:name=".Activities.MyProfile"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
@@ -28,7 +28,7 @@
             android:label="@string/sign_up" >
         </activity>
         <activity
-            android:name=".Activities.MyProfile"
+            android:name=".Activities.Login"
             android:label="@string/title_activity_my_profile"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>

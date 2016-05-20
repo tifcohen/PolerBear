@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import com.example.tiferet.polerbear.API.IUserAPI;
 import com.example.tiferet.polerbear.R;
 import com.example.tiferet.polerbear.Repository.Server.Repository;
+import com.example.tiferet.polerbear.Repository.Server.SessionManager;
 import com.example.tiferet.polerbear.Repository.Server.User;
 
 import retrofit2.Call;
@@ -26,7 +27,7 @@ import retrofit2.Response;
 
 public class Login extends AppCompatActivity {
 
-    String API = "https://api.github.com";
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,8 @@ public class Login extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         //actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
+
+        session = new SessionManager(getApplicationContext());
 
         final IUserAPI api = Repository.getInstance().retrofit.create(IUserAPI.class);
         final EditText username = (EditText) findViewById(R.id.userLogin);
@@ -64,22 +67,33 @@ public class Login extends AppCompatActivity {
                     alertDialog.getWindow().setDimAmount(0.5f);
                     alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
                 }
-                else {
+                else{
                     final Call<User> call = api.Login(username.getText().toString(), pwd.getText().toString());
                     call.enqueue(new Callback<User>() {
                         @Override
                         public void onResponse(Call<User> call, Response<User> response) {
                             User user = response.body();
+                            session.createLoginSession(user.getUserId().toString(),user.getUserName(),user.getUserEmail(),user.getUserBirthDate(), user.getUserLevel().toString());
+                            Intent intent = new Intent(getApplicationContext(), MyProfile.class);
+                            startActivity(intent);
+                            finish();
                         }
 
                         @Override
                         public void onFailure(Call<User> call, Throwable t) {
-
+                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Login.this);
+                            alertDialogBuilder.setTitle("Action Failed");
+                            alertDialogBuilder.setMessage("There is no user by that name or the password is not correct").setCancelable(false)
+                                    .setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                        }
+                                    });
+                            AlertDialog alertDialog = alertDialogBuilder.create();
+                            alertDialog.show();
+                            alertDialog.getWindow().setDimAmount(0.5f);
+                            alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
                         }
                     });
-                    Intent intent = new Intent(getApplicationContext(), Newsfeed.class);
-                    startActivity(intent);
-                    finish();
                 }
             }
         });

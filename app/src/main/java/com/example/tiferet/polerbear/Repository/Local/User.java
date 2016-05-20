@@ -1,9 +1,11 @@
 package com.example.tiferet.polerbear.Repository.Local;
 
+import java.io.Serializable;
+
 /**
  * Created by TIFERET on 27-Mar-16.
  */
-public class User {
+public class User implements Serializable {
     int userId;
     String userName;
     String pwd;
@@ -18,6 +20,15 @@ public class User {
         this.email = email;
         this.birthdate = birthdate;
         this.level = level;
+    }
+
+    public User(com.example.tiferet.polerbear.Repository.Server.User user) {
+        this.userId = user.getUserId();
+        this.userName = user.getUserName();
+        this.pwd = user.getUserPwd();
+        this.email = user.getUserEmail();
+        this.birthdate = user.getUserBirthDate();
+        this.level = user.getUserLevel();
     }
 
     /*public User() {

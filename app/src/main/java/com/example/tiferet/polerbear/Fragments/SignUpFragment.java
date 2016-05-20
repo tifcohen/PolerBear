@@ -56,7 +56,7 @@ public class SignUpFragment extends Fragment {
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Call<Boolean> call = api.isExisted(user.getText().toString(),"michaelkolet@gmail.com",pwd.getText().toString());
+                final Call<Boolean> call = api.isExisted(user.getText().toString(),pwd.getText().toString());
                 if(user.getText().toString().equals("") || pwd.getText().toString().equals("")){
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
                     alertDialogBuilder.setTitle("Action Failed");
