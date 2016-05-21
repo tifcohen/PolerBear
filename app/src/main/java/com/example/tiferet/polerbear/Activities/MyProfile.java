@@ -11,12 +11,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -52,7 +53,7 @@ public class MyProfile extends AppCompatActivity {
         TextView userLevel = (TextView) findViewById(R.id.myProfileLevelView);
 
         username.setText(user.get(SessionManager.KEY_NAME));
-        userLevel.setText(user.get(SessionManager.KEY_LEVEL));
+        userLevel.setText("Level: " +user.get(SessionManager.KEY_LEVEL));
 
         final ListView trickList = (ListView) findViewById(R.id.trickInProgressList);
         tricks = TrickDB.getInstance().getAllTricks();
@@ -94,16 +95,6 @@ public class MyProfile extends AppCompatActivity {
                 .addSubActionView(btnNewsfeed).addSubActionView(btnWarmup).addSubActionView(btnGallery).addSubActionView(btnNewTrick)
                 .attachTo(fab)
                 .build();
-
-
-        Button btnEditProfile = (Button) findViewById(R.id.editProfile);
-        btnEditProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), EditProfile.class);
-                startActivity(intent);
-            }
-        });
 
         btnWarmup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,6 +153,28 @@ public class MyProfile extends AppCompatActivity {
                 alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_profile, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logoutBtn: {
+                session.logoutUser();
+            }
+            case R.id.editBtn: {
+                Intent intent = new Intent(getApplicationContext(), EditProfile.class);
+                startActivity(intent);
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     class TricksInProgressAdapter extends BaseAdapter {

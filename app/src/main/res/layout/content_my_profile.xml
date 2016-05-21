@@ -23,10 +23,12 @@
             android:src="@drawable/male"
             android:id="@+id/myProfilePicture" />
         <LinearLayout
+            android:layout_margin="10dp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <TextView
+                android:layout_marginBottom="5dp"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@+id/myProfilePicture"
@@ -34,22 +36,20 @@
                 android:id="@+id/myProfileUsername"
                 android:textAppearance="?android:attr/textAppearanceLarge"/>
             <TextView
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="Level: x"
                 android:id="@+id/myProfileLevelView"
-                android:textAppearance="?android:attr/textAppearanceSmall"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
             <TextView
+                android:layout_marginTop="5dp"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="x Followers"
                 android:id="@+id/myProfileFollowers"
                 android:textAppearance="?android:attr/textAppearanceSmall"/>
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Edit"
-                android:id="@+id/editProfile"/>
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
