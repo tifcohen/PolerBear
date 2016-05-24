@@ -45,7 +45,8 @@ public class DateEditText extends EditText implements DatePickerFragment.OnDateS
         this.day = day;
         this.month = month;
         this.year = year;
-        setText("" + this.day + "/" + (this.month+1)+ "/" + this.year);
+        //setText("" + this.day + "-" + (this.month+1)+ "-" + this.year);
+        setText("" + this.year + "-" + (this.month+1)+ "-" + this.day);
     }
 
     @Override

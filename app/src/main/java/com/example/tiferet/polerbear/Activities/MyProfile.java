@@ -165,15 +165,18 @@ public class MyProfile extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.logoutBtn: {
-                session.logoutUser();
-            }
             case R.id.editBtn: {
                 Intent intent = new Intent(getApplicationContext(), EditProfile.class);
                 startActivity(intent);
+                return true;
+            }
+            case R.id.logoutBtn: {
+                session.logoutUser();
+                return true;
             }
             default:
-                return super.onOptionsItemSelected(item);
+                //return super.onOptionsItemSelected(item);
+                return true;
         }
     }
 

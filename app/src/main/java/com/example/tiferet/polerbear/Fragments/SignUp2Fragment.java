@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +14,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.example.tiferet.polerbear.API.IUserAPI;
 import com.example.tiferet.polerbear.R;
+import com.example.tiferet.polerbear.Repository.Server.Repository;
+import com.example.tiferet.polerbear.Repository.Server.SessionManager;
 import com.example.tiferet.polerbear.Repository.Server.User;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class SignUp2Fragment extends Fragment {
@@ -38,6 +46,7 @@ public class SignUp2Fragment extends Fragment {
         // Required empty public constructor
     }
 
+    SessionManager session;
     String[] sexPickerDropdown = new String[]{"Male", "Female"};
 
     @Override
@@ -50,9 +59,10 @@ public class SignUp2Fragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sign_up2, container, false);
 
+        final IUserAPI api = Repository.getInstance().retrofit.create(IUserAPI.class);
+        session = new SessionManager(getActivity().getApplicationContext());
+
         final EditText email = (EditText) view.findViewById(R.id.Join2EmailEditText);
-        EditText firstName = (EditText) view.findViewById(R.id.addUserFName);
-        EditText lastName = (EditText) view.findViewById(R.id.addUserLName);
         final EditText birthdate = (EditText) view.findViewById(R.id.addUserBirthDate);
         final Spinner sexDropdown = (Spinner) view.findViewById(R.id.dropdown);
         final ArrayAdapter<String>sexAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, sexPickerDropdown);
@@ -78,12 +88,30 @@ public class SignUp2Fragment extends Fragment {
                     alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
                 }
                 else {
-                    if (delegate != null) {
-                        user.setUserEmail(email.getText().toString());
-                        user.setUserBirthDate(birthdate.getText().toString());
-                        user.setUserSex(sexDropdown.getSelectedItem().toString());
-                        delegate.OnSignUp3(user);
-                    }
+                    user.setUserEmail(email.getText().toString());
+                    user.setUserBirthDate(birthdate.getText().toString());
+                    user.setUserSex(sexDropdown.getSelectedItem().toString());
+                    //user.setUserId(-1);
+                    //user.setUserLevel(-1);
+                    //final Call<Integer> call = api.addUser(user.getUserName(),user.getUserPwd(),user.getUserEmail(),user.getUserBirthDate(),user.getUserSex());
+                    final Call<Integer> call = api.addUser("application/json", user);
+
+                    call.enqueue(new Callback<Integer>() {
+                        @Override
+                        public void onResponse(Call<Integer> call, Response<Integer> response) {
+                            //session.createLoginSession(user.getUserId().toString(),user.getUserName(),user.getUserEmail(),user.getUserBirthDate(), user.getUserLevel().toString());
+                            Log.d("TAG", "pass addUser "+response.body());
+                            if (delegate != null) {
+                                user.setUserId(response.body());
+                                delegate.OnSignUp3(user);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Integer> call, Throwable t) {
+                            Log.d("TAG", "signup failed " + call.toString());
+                        }
+                    });
                 }
             }
         });

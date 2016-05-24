@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/editBtn"
+        android:orderInCategory="100"
+        android:visible="true"
+        android:title="@string/action_edit"
+        android:showAsAction="ifRoom"
+        />
+
+    <item
         android:id="@+id/logoutBtn"
         android:orderInCategory="100"
         android:visible="true"
@@ -8,11 +16,4 @@
         android:showAsAction="ifRoom"
         />
 
-    <item
-        android:id="@+id/editBtn"
-        android:orderInCategory="100"
-        android:visible="true"
-        android:title="@string/action_edit"
-        android:showAsAction="ifRoom"
-        />
 </menu>
