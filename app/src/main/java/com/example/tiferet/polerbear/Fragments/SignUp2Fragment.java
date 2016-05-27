@@ -65,7 +65,8 @@ public class SignUp2Fragment extends Fragment {
         final EditText email = (EditText) view.findViewById(R.id.Join2EmailEditText);
         final EditText birthdate = (EditText) view.findViewById(R.id.addUserBirthDate);
         final Spinner sexDropdown = (Spinner) view.findViewById(R.id.dropdown);
-        final ArrayAdapter<String>sexAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, sexPickerDropdown);
+        final ArrayAdapter<String>sexAdapter = new ArrayAdapter<String>(getActivity(), R.layout.dropdown_item_selected, sexPickerDropdown);
+        sexAdapter.setDropDownViewResource(R.layout.dropdown_items);
         sexDropdown.setAdapter(sexAdapter);
 
         Button nextBtn = (Button) view.findViewById(R.id.nextBtn);

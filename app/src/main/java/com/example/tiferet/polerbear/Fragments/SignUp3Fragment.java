@@ -51,17 +51,17 @@ public class SignUp3Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_sign_up3, container, false);
+        final View view = inflater.inflate(R.layout.fragment_sign_up3, container, false);
 
         Button nextBtn = (Button) view.findViewById(R.id.nextBtn);
         Button cancelBtn = (Button) view.findViewById(R.id.cancelBtn);
         final Spinner levelDropdown = (Spinner) view.findViewById(R.id.levelDropdown);
-        final ArrayAdapter<String> levelAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, levelPicker);
+        final ArrayAdapter<String> levelAdapter = new ArrayAdapter<String>(getActivity(), R.layout.dropdown_item_selected, levelPicker);
         //levelDropdown.setAdapter(levelAdapter);
         final ListView trickList = (ListView) view.findViewById(R.id.trickListForRegistration);
 
         //adapter = ArrayAdapter.createFromResource(this, R.array.chunks, android.R.layout.simple_spinner_item);
-        levelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        levelAdapter.setDropDownViewResource(R.layout.dropdown_items);
         levelDropdown.setAdapter(levelAdapter);
         //spinnerSize.setOnItemSelectedListener(new MyOnItemSelectedListener());
 
@@ -77,6 +77,7 @@ public class SignUp3Fragment extends Fragment {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+                trickList.setVisibility(view.INVISIBLE);
                 Toast.makeText(getActivity().getApplicationContext(), "please pick a level", Toast.LENGTH_LONG).show();
             }
         });

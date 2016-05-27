@@ -53,7 +53,6 @@ public class Login extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginPB.setVisibility(View.VISIBLE);
                 if(username.getText().toString().equals("")||pwd.getText().toString().equals("")){
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getApplicationContext());
                     alertDialogBuilder.setTitle("Action Failed");
@@ -68,6 +67,7 @@ public class Login extends AppCompatActivity {
                     alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
                 }
                 else{
+                    loginPB.setVisibility(View.VISIBLE);
                     final Call<User> call = api.Login(username.getText().toString(), pwd.getText().toString());
                     call.enqueue(new Callback<User>() {
                         @Override
@@ -77,6 +77,7 @@ public class Login extends AppCompatActivity {
                             Intent intent = new Intent(getApplicationContext(), MyProfile.class);
                             startActivity(intent);
                             finish();
+                            loginPB.setVisibility(View.GONE);
                         }
 
                         @Override

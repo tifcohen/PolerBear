@@ -15,12 +15,14 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/mark_your_level" />
         <Spinner
+            android:overlapAnchor="false"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/levelText"
             android:id="@+id/levelDropdown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:drawable/btn_dropdown"
+            style="@style/Base.DialogWindowTitle.AppCompat"
             android:spinnerMode="dropdown"/>
         <RelativeLayout
             android:id="@+id/trickList"

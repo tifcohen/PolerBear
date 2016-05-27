@@ -73,6 +73,8 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textAlignment="textStart"/>
                 <Spinner
+                    android:overlapAnchor="false"
+                    android:textSize="20sp"
                     android:layout_alignParentRight="true"
                     android:id="@+id/dropdown"
                     android:layout_width="wrap_content"
