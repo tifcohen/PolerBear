@@ -28,4 +28,6 @@ public interface IUserAPI {
     @POST("/addUser")
     Call<Integer> addUser(@Header("Content-Type") String content_type, @Body User user);
 
+    @GET("/getFollowersCount")
+    Call<Integer> getFollowersCount(@Query("user") Integer userId);
 }

@@ -22,20 +22,26 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.tiferet.polerbear.API.ITricksAPI;
+import com.example.tiferet.polerbear.API.IUserAPI;
 import com.example.tiferet.polerbear.R;
-import com.example.tiferet.polerbear.Repository.Local.Trick;
-import com.example.tiferet.polerbear.Repository.Local.TrickDB;
+import com.example.tiferet.polerbear.Repository.Server.Repository;
 import com.example.tiferet.polerbear.Repository.Server.SessionManager;
+import com.example.tiferet.polerbear.Repository.Server.TrickForUser;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
 import java.util.HashMap;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MyProfile extends AppCompatActivity {
 
     final Context context = this;
-    List<Trick> tricks;
+    List<TrickForUser> tricks;
     SessionManager session;
 
     @Override
@@ -51,22 +57,58 @@ public class MyProfile extends AppCompatActivity {
 
         TextView username = (TextView) findViewById(R.id.myProfileUsername);
         TextView userLevel = (TextView) findViewById(R.id.myProfileLevelView);
+        final TextView userFollowers = (TextView) findViewById(R.id.myProfileFollowers);
 
         username.setText(user.get(SessionManager.KEY_NAME));
-        userLevel.setText("Level: " +user.get(SessionManager.KEY_LEVEL));
+        userLevel.setText("Level: " + user.get(SessionManager.KEY_LEVEL));
+
+        final IUserAPI apiUser = Repository.getInstance().retrofit.create(IUserAPI.class);
+        final Call<Integer> callUser = apiUser.getFollowersCount(Integer.parseInt(user.get(SessionManager.KEY_ID)));
+
+        callUser.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.body() == null) {
+                    userFollowers.setText("You don't have any followers");
+                } else {
+                    userFollowers.setText(response.body() + " Followers");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+
+            }
+        });
 
         final ListView trickList = (ListView) findViewById(R.id.trickInProgressList);
-        tricks = TrickDB.getInstance().getAllTricks();
+        ITricksAPI apiTrick = Repository.getInstance().retrofit.create(ITricksAPI.class);
+        Call<List<TrickForUser>> trickCall = apiTrick.getInProgress(Integer.parseInt(user.get(SessionManager.KEY_ID)));
+
+        trickCall.enqueue(new Callback<List<TrickForUser>>() {
+            @Override
+            public void onResponse(Call<List<TrickForUser>> call, Response<List<TrickForUser>> response) {
+                tricks = response.body();
+                TricksInProgressAdapter adapter = new TricksInProgressAdapter();
+                trickList.setAdapter(adapter);
+            }
+
+            @Override
+            public void onFailure(Call<List<TrickForUser>> call, Throwable t) {
+
+            }
+        });
+
+       // tricks = TrickDB.getInstance().getAllTricks();
         //spinner.setVisibility(View.VISIBLE);
-        TricksInProgressAdapter adapter = new TricksInProgressAdapter();
-        trickList.setAdapter(adapter);
+
         //spinner.setVisibility(View.GONE);
 
         trickList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("TAG", "row selected" + position);
-                Trick trick = tricks.get(position);
+                TrickForUser trick = tricks.get(position);
                 Intent intent = new Intent(getApplicationContext(), Progress.class);
                 startActivity(intent);
             }
@@ -215,8 +257,9 @@ public class MyProfile extends AppCompatActivity {
             final TextView action2 = (TextView) convertView.findViewById(R.id.action2TextView);
             final ImageView userProfileImage = (ImageView) convertView.findViewById(R.id.userProfileImage);*/
 
-            Trick trick = tricks.get(position);
+            TrickForUser trick = tricks.get(position);
             trickName.setText(trick.getTrickName());
+            sinceDate.setText(trick.getDate());
 
             return convertView;
         }

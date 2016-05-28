@@ -50,7 +50,7 @@ public class SessionManager {
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
 
-        editor.putString(KEY_LEVEL, userId);
+        editor.putString(KEY_ID, userId);
         editor.putString(KEY_NAME, name);
         editor.putString(KEY_EMAIL, email);
         editor.putString(KEY_BIRTHDATE, birthdate);

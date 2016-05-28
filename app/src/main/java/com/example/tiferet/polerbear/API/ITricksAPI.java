@@ -1,6 +1,9 @@
 package com.example.tiferet.polerbear.API;
 
 import com.example.tiferet.polerbear.Repository.Server.Trick;
+import com.example.tiferet.polerbear.Repository.Server.TrickForUser;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -14,5 +17,9 @@ public interface ITricksAPI {
     //http://193.106.55.28:443/getTrick?trickId=1
     @GET("/getTrick")
     Call<Trick> getTrick(@Query("trickId") int trickId);
+
+    //get all the trick in progress for user
+    @GET("/getInProgress")
+    Call<List<TrickForUser>> getInProgress(@Query("user") int userId);
 }
 
