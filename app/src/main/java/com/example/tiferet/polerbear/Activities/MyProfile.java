@@ -110,6 +110,7 @@ public class MyProfile extends AppCompatActivity {
                 Log.d("TAG", "row selected" + position);
                 TrickForUser trick = tricks.get(position);
                 Intent intent = new Intent(getApplicationContext(), Progress.class);
+                intent.putExtra("trickId", trick.getTrickId().toString());
                 startActivity(intent);
             }
         });

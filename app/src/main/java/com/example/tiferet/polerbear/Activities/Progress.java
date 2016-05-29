@@ -2,6 +2,7 @@ package com.example.tiferet.polerbear.Activities;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -34,9 +35,13 @@ public class Progress extends AppCompatActivity implements ProgressFragment.Prog
             }
         });
 
+        Intent intent = getIntent();
+        String trickId = intent.getStringExtra("trickId");
+
         current = "progress";
         progressFragment = new ProgressFragment();
         progressFragment.setDelegate(this);
+        progressFragment.setTrickId(trickId);
         //stack.push(myProfileFragment);
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();

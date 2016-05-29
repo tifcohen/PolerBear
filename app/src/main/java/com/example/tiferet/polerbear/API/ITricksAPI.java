@@ -21,5 +21,10 @@ public interface ITricksAPI {
     //get all the trick in progress for user
     @GET("/getInProgress")
     Call<List<TrickForUser>> getInProgress(@Query("user") int userId);
+
+    //http://193.106.55.28:443/getTrickInProgress?user=40&trick=5
+    //get all progress for specific trick
+    @GET("/getTrickInProgres")
+    Call<List<TrickForUser>> getTrickInProgress(@Query("user") int userId, @Query("trick") int trickId);
 }
 

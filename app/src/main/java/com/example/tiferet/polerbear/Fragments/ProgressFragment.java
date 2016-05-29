@@ -2,6 +2,7 @@ package com.example.tiferet.polerbear.Fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,9 @@ public class ProgressFragment extends Fragment {
         void OnUpdateProgress();
     }
 
+    public void setTrickId(String trickId){this.trickId=trickId;}
+
+    String trickId;
     Trick thisTrick;
     List<Trick> tricks;
     ListView trickList;
@@ -46,6 +50,7 @@ public class ProgressFragment extends Fragment {
         ProgressAdapter adapter = new ProgressAdapter();
         trickList.setAdapter(adapter);
 
+        Log.d("TAG", trickId);
         //TextView trickName = (TextView) view.findViewById(R.id.trickName);
         //trickName.setText(thisTrick.getTrickName());
 

@@ -21,6 +21,7 @@ import javax.annotation.Generated;
         "trickName",
         "date",
         "comment",
+        "trickPic",
         "isFinised",
         "doneBefore"
 })
@@ -38,6 +39,8 @@ public class TrickForUser {
     private String date;
     @JsonProperty("comment")
     private String comment;
+    @JsonProperty("trickPic")
+    private String trickPic;
     @JsonProperty("isFinised")
     private Integer isFinised;
     @JsonProperty("doneBefore")
@@ -168,6 +171,26 @@ public class TrickForUser {
     /**
      *
      * @return
+     * The trickPic
+     */
+    @JsonProperty("trickPic")
+    public String getTrickPic() {
+        return trickPic;
+    }
+
+    /**
+     *
+     * @param trickPic
+     * The trickPic
+     */
+    @JsonProperty("trickPic")
+    public void setTrickPic(String trickPic) {
+        this.trickPic = trickPic;
+    }
+
+    /**
+     *
+     * @return
      * The isFinised
      */
     @JsonProperty("isFinised")
@@ -214,5 +237,4 @@ public class TrickForUser {
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
     }
-
 }

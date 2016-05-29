@@ -27,6 +27,28 @@
                     android:id="@+id/editUserBirthDate"
                     android:textAlignment="textEnd"/>
             </LinearLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/sexPicker"
+                android:text="Sex: "
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAlignment="textStart"/>
+            <Spinner
+                android:overlapAnchor="false"
+                android:textSize="20sp"
+                android:layout_alignParentRight="true"
+                android:id="@+id/dropdown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/btn_dropdown"
+                android:spinnerMode="dropdown" />
+        </RelativeLayout>
             <LinearLayout
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal"
