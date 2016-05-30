@@ -17,7 +17,6 @@ public class Repository {
                 .addConverterFactory(GsonConverterFactory.create()).build();
     }
 
-
     public static Repository getInstance(){
         return instance;
     }

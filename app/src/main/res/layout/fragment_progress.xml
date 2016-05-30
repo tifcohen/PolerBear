@@ -19,19 +19,14 @@
                 android:id="@+id/trickName"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
             <TextView
-                android:layout_centerInParent="true"
-                android:layout_marginTop="7dp"
-                android:layout_marginBottom="6dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="trick level"
                 android:id="@+id/trickLevel"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
-            <Button
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Update progress"/>
         </RelativeLayout>
         <LinearLayout
             android:layout_below="@+id/trickDetails"
@@ -39,35 +34,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <TextView
+                android:id="@+id/sinceDate"
                 android:layout_marginLeft="7dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Since: **date**"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
         </LinearLayout>
         <ListView
             android:id="@+id/trickList"
             android:layout_below="@id/trickFirstDate"
             android:layout_width="wrap_content"
-            android:layout_height="400dp">
-        </ListView>
-        <TableLayout
-            android:layout_alignParentBottom="true"
-            android:layout_below="@+id/trickList"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-            <TableRow>
-                <Button
-                    android:layout_weight="1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Mark as Done"/>
-                <Button
-                    android:layout_weight="1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Remind Me" />
-            </TableRow>
-        </TableLayout>
+        </ListView>
     </RelativeLayout>
 </FrameLayout>

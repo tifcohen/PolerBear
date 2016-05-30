@@ -111,6 +111,7 @@ public class MyProfile extends AppCompatActivity {
                 TrickForUser trick = tricks.get(position);
                 Intent intent = new Intent(getApplicationContext(), Progress.class);
                 intent.putExtra("trickId", trick.getTrickId().toString());
+                //intent.putExtra("trickName", trick.getTrickName());
                 startActivity(intent);
             }
         });
