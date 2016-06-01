@@ -62,6 +62,7 @@ public class MyProfile extends AppCompatActivity {
         username.setText(user.get(SessionManager.KEY_NAME));
         userLevel.setText("Level: " + user.get(SessionManager.KEY_LEVEL));
 
+        //session.logoutUser();
         final IUserAPI apiUser = Repository.getInstance().retrofit.create(IUserAPI.class);
         final Call<Integer> callUser = apiUser.getFollowersCount(Integer.parseInt(user.get(SessionManager.KEY_ID)));
 
