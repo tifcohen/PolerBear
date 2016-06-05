@@ -12,6 +12,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_gallery"
     tools:context="com.example.tiferet.polerbear.Activities.Gallery">
+
     <ListView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -19,4 +20,12 @@
         android:drawSelectorOnTop="false"
         android:divider="@android:color/transparent">
     </ListView>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

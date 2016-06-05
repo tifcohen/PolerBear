@@ -2,28 +2,37 @@ package com.example.tiferet.polerbear.Activities;
 
 import android.app.FragmentManager;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.tiferet.polerbear.Repository.Local.Trick;
-import com.example.tiferet.polerbear.Repository.Local.TrickDB;
+import com.example.tiferet.polerbear.API.ITricksAPI;
 import com.example.tiferet.polerbear.R;
+import com.example.tiferet.polerbear.Repository.Server.Repository;
+import com.example.tiferet.polerbear.Repository.Server.SessionManager;
+import com.example.tiferet.polerbear.Repository.Server.TrickForUser;
 
+import java.util.HashMap;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Gallery extends AppCompatActivity {
 
-    List<Trick> tricks;
+    String trickId;
+    SessionManager session;
+    List<TrickForUser> tricks;
     ListView trickList;
 
     @Override
@@ -36,23 +45,32 @@ public class Gallery extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
+        final ProgressBar spinner = (ProgressBar) findViewById(R.id.spinner);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        spinner.setVisibility(View.VISIBLE);
+
+        session = new SessionManager(getApplicationContext());
+        HashMap<String, String> user = session.getUserDetails();
+
+        final ITricksAPI api = Repository.getInstance().retrofit.create(ITricksAPI.class);
+        final Call<List<TrickForUser>> callTrickForUser = api.getTricksForUser(Integer.parseInt(user.get(SessionManager.KEY_ID)));
+
+        callTrickForUser.enqueue(new Callback<List<TrickForUser>>() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onResponse(Call<List<TrickForUser>> call, Response<List<TrickForUser>> response) {
+                tricks = response.body();
+                GalleryAdapter adapter = new GalleryAdapter();
+                trickList.setAdapter(adapter);
+                spinner.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFailure(Call<List<TrickForUser>> call, Throwable t) {
+                Log.d("TAG", "failed to fetch tricks");
             }
         });
-
         trickList = (ListView) findViewById(R.id.galleryList);
 
-        tricks = TrickDB.getInstance().getAllTricks();
-        //spinner.setVisibility(View.VISIBLE);
-        GalleryAdapter adapter = new GalleryAdapter();
-        trickList.setAdapter(adapter);
-        //spinner.setVisibility(View.GONE);
     }
 
     @Override
@@ -100,16 +118,12 @@ public class Gallery extends AppCompatActivity {
             }
             final TextView trickName = (TextView) convertView.findViewById(R.id.trickName);
             final TextView trickDate = (TextView) convertView.findViewById(R.id.trickDate);
-            /*final TextView bookReview = (TextView) convertView.findViewById(R.id.bookReview);
-            final ImageView stars = (ImageView) convertView.findViewById(R.id.stars);
-            final TextView page = (TextView) convertView.findViewById(R.id.pageTextView);
-            final TextView action = (TextView) convertView.findViewById(R.id.actionTextView);
-            final TextView action2 = (TextView) convertView.findViewById(R.id.action2TextView);
-            final ImageView userProfileImage = (ImageView) convertView.findViewById(R.id.userProfileImage);*/
+            final TextView comment = (TextView) convertView.findViewById(R.id.comment);
 
-            Trick trick = tricks.get(position);
+            TrickForUser trick = tricks.get(position);
             trickName.setText(trick.getTrickName());
-            trickDate.setText(trick.getTrickId()+"");
+            trickDate.setText(trick.getDate());
+            comment.setText(trick.getComment());
 
             return convertView;
         }
