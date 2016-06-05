@@ -35,7 +35,13 @@ public class UpdateProgressFragment extends Fragment {
         Button upload = (Button) view.findViewById(R.id.uploadBtn);
         ImageView image = (ImageView) view.findViewById(R.id.uploadedImage);
 
-        // only gallery, photo / video
+        upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // only gallery, photo / video
+            }
+        });
+
 
         return view;
     }

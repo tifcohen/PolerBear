@@ -82,6 +82,7 @@ public class EditProfile extends AppCompatActivity {
             case PICK_IMAGE_ID:
                 Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
                 // TODO use bitmap
+                profilePic.setImageBitmap(bitmap);
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
