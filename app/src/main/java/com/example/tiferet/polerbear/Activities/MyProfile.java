@@ -64,7 +64,12 @@ public class MyProfile extends AppCompatActivity {
 
         //session.logoutUser();
         final IUserAPI apiUser = Repository.getInstance().retrofit.create(IUserAPI.class);
-        final Call<Integer> callUser = apiUser.getFollowersCount(Integer.parseInt(user.get(SessionManager.KEY_ID)));
+        int userId = Integer.parseInt(user.get(SessionManager.KEY_ID));
+        if (user.get(SessionManager.KEY_ID).equals(null)){
+            userId=0;
+        }
+        final Call<Integer> callUser = apiUser.getFollowersCount(userId);
+        //final Call<Integer> callUser = apiUser.getFollowersCount(Integer.parseInt(user.get(SessionManager.KEY_ID)));
 
         callUser.enqueue(new Callback<Integer>() {
             @Override

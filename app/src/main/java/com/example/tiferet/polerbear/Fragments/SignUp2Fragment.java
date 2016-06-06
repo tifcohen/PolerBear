@@ -100,7 +100,7 @@ public class SignUp2Fragment extends Fragment {
                     call.enqueue(new Callback<Integer>() {
                         @Override
                         public void onResponse(Call<Integer> call, Response<Integer> response) {
-                            //session.createLoginSession(user.getUserId().toString(),user.getUserName(),user.getUserEmail(),user.getUserBirthDate(), user.getUserLevel().toString());
+                            session.createLoginSession(response.body().toString(),user.getUserName(),user.getUserEmail(),user.getUserBirthDate(), user.getUserLevel().toString());
                             Log.d("TAG", "pass addUser "+response.body());
                             if (delegate != null) {
                                 user.setUserId(response.body());
