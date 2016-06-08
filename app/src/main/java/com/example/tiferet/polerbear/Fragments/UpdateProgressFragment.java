@@ -53,18 +53,18 @@ public class UpdateProgressFragment extends Fragment {
         trickImage = (ImageView) view.findViewById(R.id.uploadedImage);
 
         videoView = (VideoView) view.findViewById(R.id.videoView);
-
+        videoView.setVisibility(View.GONE);
         trickImage.setVisibility(View.GONE);
+
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // only gallery, photo / video
-
                 Intent intent = new Intent();
                 intent.setType("video/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "Select Video"), REQUEST_TAKE_GALLERY_VIDEO);
-
+                videoView.setVisibility(View.VISIBLE);
             }
         });
 

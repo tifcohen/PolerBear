@@ -39,7 +39,7 @@
             android:layout_below="@id/anyComments"
             android:id="@+id/commentsBox"
             android:layout_width="match_parent"
-            android:layout_height="100dp" />
+            android:layout_height="75dp" />
         <Button
             android:layout_below="@+id/commentsBox"
             android:id="@+id/uploadBtn"
@@ -54,8 +54,12 @@
             android:layout_height="100dp"
             android:src="@drawable/placeholder"/>
 
-        <VideoView android:id="@+id/videoView"
-            android:layout_height="200px"
+        <VideoView
+            android:layout_above="@+id/saveBtn"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/uploadBtn"
+            android:id="@+id/videoView"
+            android:layout_height="100dp"
             android:layout_width="match_parent"/>
 
         <Button
