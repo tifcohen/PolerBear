@@ -39,7 +39,7 @@
             android:layout_below="@id/anyComments"
             android:id="@+id/commentsBox"
             android:layout_width="match_parent"
-            android:layout_height="150dp" />
+            android:layout_height="100dp" />
         <Button
             android:layout_below="@+id/commentsBox"
             android:id="@+id/uploadBtn"
@@ -51,7 +51,21 @@
             android:layout_below="@+id/uploadBtn"
             android:id="@+id/uploadedImage"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="100dp"
             android:src="@drawable/placeholder"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:text="Save"
+            android:id="@+id/saveBtn"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:text="Cancel"
+            android:id="@+id/CancelBtn"/>
     </RelativeLayout>
 </FrameLayout>
