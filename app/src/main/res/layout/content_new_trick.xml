@@ -25,33 +25,26 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="level"
         android:id="@+id/trickLevel"/>
-    <LinearLayout
-        android:orientation="vertical"
+    <VideoView
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:layout_below="@+id/trickName"
+        android:layout_above="@+id/addProgress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/trickVideo"/>
+    <Button
+        android:id="@+id/addProgress"
+        android:layout_alignParentLeft="true"
+        android:text="Add to Progress"
+        android:layout_alignParentBottom="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <ScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <LinearLayout
-                android:id="@+id/linearLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <VideoView
-                    android:layout_width="wrap_content"
-                    android:layout_height="250dp"
-                    android:id="@+id/trickVideo"/>
-                <ImageView
-                    android:id="@+id/trickPic"
-                    android:layout_width="wrap_content"
-                    android:layout_height="250dp"
-                    android:src="@drawable/placeholder"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/trickSteps">
-                </TextView>
-            </LinearLayout>
-        </ScrollView>
-    </LinearLayout>
+        android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/roleAnother"
+        android:layout_alignParentRight="true"
+        android:text="Give me another"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </RelativeLayout>

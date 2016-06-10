@@ -17,4 +17,28 @@
 
     <include layout="@layout/content_edit_profile" />
 
+    <RelativeLayout
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="40dp"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/joinInfo">
+        <Button
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/cancelBtn"
+            android:textAlignment="center"
+            android:text="Cancel"
+            android:layout_alignParentLeft="true" />
+        <Button
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/saveEditUserBtn"
+            android:textAlignment="center"
+            android:layout_alignParentRight="true"
+            android:text="Save" />
+    </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

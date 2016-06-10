@@ -1,19 +1,25 @@
 package com.example.tiferet.polerbear.Activities;
 
+import android.app.ProgressDialog;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.util.Log;
+import android.widget.MediaController;
 import android.widget.VideoView;
 
 import com.example.tiferet.polerbear.R;
 
 public class NewTrick extends AppCompatActivity {
+
+    // Declare variables
+    ProgressDialog pDialog;
+    VideoView videoview;
+
+    // Insert your Video URL
+    String VideoURL = "http://www.androidbegin.com/tutorial/AndroidCommercial.3gp";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,25 +28,41 @@ public class NewTrick extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+        videoview = (VideoView) findViewById(R.id.trickVideo);
+
+        // Create a progressbar
+        pDialog = new ProgressDialog(NewTrick.this);
+        // Set progressbar title
+        pDialog.setTitle("Your new trick is on its way!");
+        // Set progressbar message
+        pDialog.setMessage("Buffering...");
+        pDialog.setIndeterminate(false);
+        pDialog.setCancelable(false);
+        // Show progressbar
+        pDialog.show();
+
+        try {
+            // Start the MediaController
+            MediaController mediacontroller = new MediaController(
+                    NewTrick.this);
+            mediacontroller.setAnchorView(videoview);
+            // Get the URL from String VideoURL
+            Uri video = Uri.parse(VideoURL);
+            videoview.setMediaController(mediacontroller);
+            videoview.setVideoURI(video);
+
+        } catch (Exception e) {
+            Log.e("Error", e.getMessage());
+            e.printStackTrace();
+        }
+
+        videoview.requestFocus();
+        videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            // Close the progress bar and play the video
+            public void onPrepared(MediaPlayer mp) {
+                pDialog.dismiss();
+                videoview.start();
             }
         });
-
-        VideoView trickVid = (VideoView) findViewById(R.id.trickVideo);
-        trickVid.setVisibility(View.GONE);
-/*
-        for(int i=0; i<10; i++) {
-            LinearLayout lt = (LinearLayout) findViewById(R.id.linearLayout);
-            TextView tv = (TextView) getLayoutInflater().inflate(R.layout.content_new_trick, lt);
-            tv.setText(i+"");
-            lt.addView(tv);
-        }
-*/
     }
-
 }

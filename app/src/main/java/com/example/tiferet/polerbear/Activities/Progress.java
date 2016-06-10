@@ -74,6 +74,8 @@ public class Progress extends AppCompatActivity implements ProgressFragment.Prog
     public void OnUpdateProgress() {
         updateProgressFragment = new UpdateProgressFragment();
         //updateProgressFragment.setDelegate(this);
+        updateProgressFragment.setUserId("40"); //TODO
+        updateProgressFragment.setTrickId("26"); //TODO
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.add(R.id.progressContainer, updateProgressFragment);

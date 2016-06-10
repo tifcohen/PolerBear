@@ -8,19 +8,35 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.example.tiferet.polerbear.API.IUploadFiles;
 import com.example.tiferet.polerbear.R;
+import com.example.tiferet.polerbear.Repository.Server.Repository;
+
+import java.io.File;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class UpdateProgressFragment extends Fragment {
     private static final int REQUEST_TAKE_GALLERY_VIDEO = 666; // the number doesn't matter
+
+    private Uri selectedImageUri;
 
     public interface UpdateProgressFragmentDelegate {
         //   void onUpdateProgress();
@@ -30,9 +46,21 @@ public class UpdateProgressFragment extends Fragment {
     VideoView videoView;
     UpdateProgressFragment delegate;
 
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public void setTrickId(String trickId) {
+        this.trickId = trickId;
+    }
+
+    String userId;
+    String trickId;
+
     public void setDelegate(UpdateProgressFragment delegate) {
         this.delegate = delegate;
     }
+
 
     public UpdateProgressFragment() {
         // Required empty public constructor
@@ -49,6 +77,8 @@ public class UpdateProgressFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_update_progress, container, false);
 
+        Button saveBtn = (Button) view.findViewById(R.id.saveBtn);
+        Button cancelBtn = (Button) view.findViewById(R.id.cancelBtn);
         Button upload = (Button) view.findViewById(R.id.uploadBtn);
         trickImage = (ImageView) view.findViewById(R.id.uploadedImage);
 
@@ -68,14 +98,35 @@ public class UpdateProgressFragment extends Fragment {
             }
         });
 
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                if(selectedImageUri == null) {
+                    Toast.makeText(getActivity().getApplicationContext(), "Not Video selected", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                String path = getRealPathFromURI(getActivity().getApplicationContext(),selectedImageUri);
+                File file = new File(path);
+                updateImageToServer(file, userId, trickId);
+                selectedImageUri = null;
+                getActivity().onBackPressed();
+            }
+        });
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
         return view;
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_TAKE_GALLERY_VIDEO) {
-                Uri selectedImageUri = data.getData();
+                selectedImageUri = data.getData();
 
                 // OI FILE Manager
                 //String filemanagerstring = selectedImageUri.getPath();
@@ -111,6 +162,40 @@ public class UpdateProgressFragment extends Fragment {
                 cursor.close();
             }
         }
+    }
+
+    private void updateImageToServer(File file, String userId, String trickId) {
+        // create upload service client
+        final IUploadFiles service = Repository.getInstance().retrofit.create(IUploadFiles.class);
+
+        // create RequestBody instance from file
+        RequestBody requestFile =
+                RequestBody.create(MediaType.parse("multipart/form-data"), file);
+
+        // MultipartBody.Part is used to send also the actual file name
+        MultipartBody.Part body =
+                MultipartBody.Part.createFormData("trickVideo", file.getName(), requestFile);
+
+        // add another part within the multipart request
+        String descriptionString = "hello, this is description speaking";
+        RequestBody description =
+                RequestBody.create(
+                        MediaType.parse("multipart/form-data"), descriptionString);
+
+        // finally, execute the request
+        Call<ResponseBody> call = service.addTrickVideo(userId, trickId, description, body);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call,
+                                   Response<ResponseBody> response) {
+                Log.v("Upload", "success");
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("Upload error:", t.getMessage());
+            }
+        });
     }
 
 }
