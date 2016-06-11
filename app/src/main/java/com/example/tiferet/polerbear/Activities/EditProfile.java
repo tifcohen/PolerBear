@@ -66,6 +66,12 @@ public class EditProfile extends AppCompatActivity {
         final ArrayAdapter<String> sexAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.dropdown_item_selected, sexPickerDropdown);
         sexAdapter.setDropDownViewResource(R.layout.dropdown_items);
         sexDropdown.setAdapter(sexAdapter);
+        String compareValue = user.get(SessionManager.KEY_SEX);
+        if (!compareValue.equals(null)) {
+            int spinnerPosition = sexAdapter.getPosition(compareValue);
+            sexDropdown.setSelection(spinnerPosition);
+        }
+
 
         date.setText(user.get(SessionManager.KEY_BIRTHDATE));
 
