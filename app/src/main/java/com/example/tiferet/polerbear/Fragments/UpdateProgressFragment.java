@@ -3,6 +3,7 @@ package com.example.tiferet.polerbear.Fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -13,16 +14,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.example.tiferet.polerbear.API.ITricksAPI;
 import com.example.tiferet.polerbear.API.IUploadFiles;
+import com.example.tiferet.polerbear.Picker.Date.DateEditText;
 import com.example.tiferet.polerbear.R;
 import com.example.tiferet.polerbear.Repository.Server.Repository;
+import com.example.tiferet.polerbear.Repository.Server.SessionManager;
+import com.example.tiferet.polerbear.Repository.Server.Trick;
+import com.example.tiferet.polerbear.Repository.Server.TrickForUser;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -37,6 +50,7 @@ public class UpdateProgressFragment extends Fragment {
     private static final int REQUEST_TAKE_GALLERY_VIDEO = 666; // the number doesn't matter
 
     private Uri selectedImageUri;
+    SessionManager session;
 
     public interface UpdateProgressFragmentDelegate {
         //   void onUpdateProgress();
@@ -77,14 +91,39 @@ public class UpdateProgressFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_update_progress, container, false);
 
+        session = new SessionManager(getActivity().getApplicationContext());
+        final HashMap<String, String> user = session.getUserDetails();
+
         Button saveBtn = (Button) view.findViewById(R.id.saveBtn);
         Button cancelBtn = (Button) view.findViewById(R.id.cancelBtn);
         Button upload = (Button) view.findViewById(R.id.uploadBtn);
+        final CheckBox cb = (CheckBox) view.findViewById(R.id.finished);
+        final DateEditText progressDate = (DateEditText) view.findViewById(R.id.progressDate);
         trickImage = (ImageView) view.findViewById(R.id.uploadedImage);
-
+        final TextView trickName = (TextView) view.findViewById(R.id.trickName);
         videoView = (VideoView) view.findViewById(R.id.videoView);
+        final EditText comment = (EditText) view.findViewById(R.id.commentsBox);
+
         videoView.setVisibility(View.GONE);
         trickImage.setVisibility(View.GONE);
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        progressDate.setText(dateFormat.format(date));
+
+        final ITricksAPI api = Repository.getInstance().retrofit.create(ITricksAPI.class);
+        Call<Trick> callTrick = api.getTrick(Integer.parseInt(trickId));
+        callTrick.enqueue(new Callback<Trick>() {
+            @Override
+            public void onResponse(Call<Trick> call, Response<Trick> response) {
+                trickName.setText(response.body().getTrickName());
+            }
+
+            @Override
+            public void onFailure(Call<Trick> call, Throwable t) {
+
+            }
+        });
 
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,15 +140,43 @@ public class UpdateProgressFragment extends Fragment {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                TrickForUser updatedProgress = new TrickForUser();
+                updatedProgress.setUserId(Integer.parseInt(userId));
+                updatedProgress.setUserName(user.get(SessionManager.KEY_NAME));
+                updatedProgress.setTrickId(Integer.parseInt(trickId));
+                updatedProgress.setTrickName(trickName.getText().toString());
+                updatedProgress.setDate(progressDate.getText().toString());
+                updatedProgress.setComment(comment.getText().toString());
+                if(cb.isChecked()){
+                    updatedProgress.setIsFinised(1);
+                }else {
+                    updatedProgress.setIsFinised(0);
+                }
+
+                final ITricksAPI api = Repository.getInstance().retrofit.create(ITricksAPI.class);
+                Call<Void> callTrick = api.addProgress("application/json", updatedProgress);
+                callTrick.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        Toast.makeText(getContext(), "Progress updated successfully", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Toast.makeText(getContext(), "Update progress failed, please try again", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
                 if(selectedImageUri == null) {
                     Toast.makeText(getActivity().getApplicationContext(), "No Video selected", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                String path = getRealPathFromURI(getActivity().getApplicationContext(),selectedImageUri);
+                //String path = getRealPathFromURI(getActivity().getApplicationContext(),selectedImageUri);
+                String path = getRealPathFromURI(selectedImageUri);
                 File file = new File(path);
                 updateImageToServer(file, userId, trickId);
                 selectedImageUri = null;
+
                 getActivity().onBackPressed();
             }
         });
@@ -150,11 +217,13 @@ public class UpdateProgressFragment extends Fragment {
 
     public String getRealPathFromURI(Context context, Uri contentUri) {
         Cursor cursor = null;
+        String tmp;
         try {
             String[] proj = { MediaStore.Images.Media.DATA };
             cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            return cursor.getString(column_index);
+            tmp = cursor.getString(column_index);
+            return tmp;
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -162,7 +231,19 @@ public class UpdateProgressFragment extends Fragment {
         }
     }
 
+    private String getRealPathFromURI(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        CursorLoader loader = new CursorLoader(getActivity().getApplicationContext(), contentUri, proj, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String result = cursor.getString(column_index);
+        cursor.close();
+        return result;
+    }
+
     private void updateImageToServer(File file, String userId, String trickId) {
+
         // create upload service client
         final IUploadFiles service = Repository.getInstance().retrofit.create(IUploadFiles.class);
 

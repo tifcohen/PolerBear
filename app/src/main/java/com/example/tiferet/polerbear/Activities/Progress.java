@@ -13,12 +13,17 @@ import android.view.View;
 import com.example.tiferet.polerbear.Fragments.ProgressFragment;
 import com.example.tiferet.polerbear.Fragments.UpdateProgressFragment;
 import com.example.tiferet.polerbear.R;
+import com.example.tiferet.polerbear.Repository.Server.SessionManager;
+
+import java.util.HashMap;
 
 public class Progress extends AppCompatActivity implements ProgressFragment.ProgressFragmentDelegate, UpdateProgressFragment.UpdateProgressFragmentDelegate {
 
     ProgressFragment progressFragment;
     UpdateProgressFragment updateProgressFragment;
     String current;
+    SessionManager session;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,18 +32,21 @@ public class Progress extends AppCompatActivity implements ProgressFragment.Prog
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        session = new SessionManager(getApplicationContext());
+        final HashMap<String, String> user = session.getUserDetails();
+
+        Intent intent = getIntent();
+        final String trickId = intent.getStringExtra("trickId");
+
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(R.drawable.edit_icon);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 fab.setVisibility(View.GONE);
-                OnUpdateProgress();
+                OnUpdateProgress(user.get(SessionManager.KEY_ID), trickId);
             }
         });
-
-        Intent intent = getIntent();
-        String trickId = intent.getStringExtra("trickId");
 
         current = "progress";
         progressFragment = new ProgressFragment();
@@ -71,11 +79,11 @@ public class Progress extends AppCompatActivity implements ProgressFragment.Prog
     }
 
     @Override
-    public void OnUpdateProgress() {
+    public void OnUpdateProgress(String userId, String trickId) {
         updateProgressFragment = new UpdateProgressFragment();
         //updateProgressFragment.setDelegate(this);
-        updateProgressFragment.setUserId("40"); //TODO
-        updateProgressFragment.setTrickId("26"); //TODO
+        updateProgressFragment.setUserId(userId);
+        updateProgressFragment.setTrickId(trickId);
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.add(R.id.progressContainer, updateProgressFragment);
@@ -84,12 +92,4 @@ public class Progress extends AppCompatActivity implements ProgressFragment.Prog
         invalidateOptionsMenu();
     }
 
- /*   @Override
-    public void OnUpdateProgress() {
-        updateProgressFragment = new UpdateProgressFragment();
-        updateProgressFragment.setDelegate(this);
-        //progressFragment.setTrickId(trickId);
-        //stack.push(myProfileFragment);
-
-    }*/
 }

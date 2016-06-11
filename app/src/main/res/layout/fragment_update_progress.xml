@@ -15,21 +15,43 @@
             android:id="@+id/trickName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-        <TextView
-            android:id="@+id/progressDate"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/date"
             android:layout_below="@+id/trickName"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Date of progress:"/>
-        <com.example.tiferet.polerbear.Picker.Date.DateEditText
+            android:layout_height="wrap_content">
+            <TextView
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date of progress:"/>
+            <com.example.tiferet.polerbear.Picker.Date.DateEditText
+                android:id="@+id/progressDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/progressDate">
+            </com.example.tiferet.polerbear.Picker.Date.DateEditText>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/isFinished"
+            android:layout_below="@+id/date"
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/progressDate">
-        </com.example.tiferet.polerbear.Picker.Date.DateEditText>
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="Did you make it?"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <CheckBox
+                android:id="@+id/finished"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
         <TextView
             android:id="@+id/anyComments"
-            android:layout_below="@+id/progressDate"
+            android:layout_below="@+id/isFinished"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Any comments on this one...?"/>

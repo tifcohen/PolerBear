@@ -28,7 +28,7 @@ import retrofit2.Response;
 
 public class ProgressFragment extends Fragment {
     public interface ProgressFragmentDelegate {
-        void OnUpdateProgress();
+        void OnUpdateProgress(String userId, String trickId);
     }
 
     public void setTrickId(String trickId){this.trickId=trickId;}

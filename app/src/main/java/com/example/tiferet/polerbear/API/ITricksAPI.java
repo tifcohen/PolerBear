@@ -6,7 +6,10 @@ import com.example.tiferet.polerbear.Repository.Server.TrickForUser;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 /**
@@ -34,5 +37,10 @@ public interface ITricksAPI {
     //localhost:2070/getAllTricksForUsers
     @GET("/getAllTricksForUsers")
     Call<List<TrickForUser>> getAllTricksForUsers();
+
+    //localhost:2070/addProgress?user={userId}&trick={trickId}&pic={picRef}&date={dd/mm/yy}&comment={comment}
+    @POST("/addProgress")
+    Call<Void> addProgress(@Header("Content-Type") String content_type, @Body TrickForUser updatedProgress);
+
 }
 

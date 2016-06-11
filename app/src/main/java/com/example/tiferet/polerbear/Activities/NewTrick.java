@@ -19,7 +19,7 @@ public class NewTrick extends AppCompatActivity {
     VideoView videoview;
 
     // Insert your Video URL
-    String VideoURL = "http://www.androidbegin.com/tutorial/AndroidCommercial.3gp";
+    String VideoURL = "http://193.106.55.28/trick_picvideo-picvideo_obj%20(7).mp4";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
