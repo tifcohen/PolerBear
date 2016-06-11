@@ -30,5 +30,9 @@ public interface ITricksAPI {
     //localhost:2070/getTricksForUser?user={user}
     @GET("/getTricksForUser")
     Call<List<TrickForUser>> getTricksForUser(@Query("user") int userId);
+
+    //localhost:2070/getAllTricksForUsers
+    @GET("/getAllTricksForUsers")
+    Call<List<TrickForUser>> getAllTricksForUsers();
 }
 

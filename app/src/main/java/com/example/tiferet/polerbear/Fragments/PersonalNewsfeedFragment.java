@@ -7,10 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.example.tiferet.polerbear.Activities.MyProfile;
 import com.example.tiferet.polerbear.Repository.Local.User;
@@ -91,16 +93,15 @@ public class PersonalNewsfeedFragment extends Fragment {
         public View getView(final int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 LayoutInflater inflater = getActivity().getLayoutInflater();
-                convertView = inflater.inflate(R.layout.personal_newsfeed_single_row, null);
+                convertView = inflater.inflate(R.layout.global_newsfeed_single_row, null);
             }
+
             final TextView userName = (TextView) convertView.findViewById(R.id.otherUsername);
-            /*final TextView bookName = (TextView) convertView.findViewById(R.id.bookName);
-            final TextView bookReview = (TextView) convertView.findViewById(R.id.bookReview);
-            final ImageView stars = (ImageView) convertView.findViewById(R.id.stars);
-            final TextView page = (TextView) convertView.findViewById(R.id.pageTextView);
-            final TextView action = (TextView) convertView.findViewById(R.id.actionTextView);
-            final TextView action2 = (TextView) convertView.findViewById(R.id.action2TextView);
-            final ImageView userProfileImage = (ImageView) convertView.findViewById(R.id.userProfileImage);*/
+            final TextView trickName = (TextView) convertView.findViewById(R.id.trickname);
+            final TextView trickLevel = (TextView) convertView.findViewById(R.id.level);
+            final Button teachMe = (Button) convertView.findViewById(R.id.teachMeBtn);
+            final ProgressBar videoSpinner = (ProgressBar) convertView.findViewById(R.id.videoSpinner);
+            final VideoView trickVideo = (VideoView) convertView.findViewById(R.id.trickVideo);
 
             User user = users.get(position);
             userName.setText(user.getUserName());

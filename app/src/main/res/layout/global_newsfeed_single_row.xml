@@ -72,22 +72,24 @@
                 android:textAlignment="textEnd"
                 android:focusable="false"/>
         </LinearLayout>
-    </RelativeLayout>
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:id="@+id/trickVideo"
-        android:src="@drawable/placeholder" />
+    <VideoView
+        android:layout_below="@+id/username"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:id="@+id/trickVideo" />
+    <ProgressBar
+        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/videoSpinner"/>
     <Button
+        android:layout_below="@+id/trickVideo"
+        android:id="@+id/teachMeBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/trickVideo"
         android:layout_alignParentRight="true"
         android:text="Teach me! >>"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_marginRight="10dp"/>
+        android:textAppearance="?android:attr/textAppearanceSmall"/>
+    </RelativeLayout>
+
 </RelativeLayout>

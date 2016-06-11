@@ -103,7 +103,7 @@ public class UpdateProgressFragment extends Fragment {
             public void onClick(View v) {
 
                 if(selectedImageUri == null) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Not Video selected", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), "No Video selected", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 String path = getRealPathFromURI(getActivity().getApplicationContext(),selectedImageUri);
@@ -135,16 +135,15 @@ public class UpdateProgressFragment extends Fragment {
                 //String selectedImagePath = getPath(selectedImageUri);
                 //if (selectedImagePath != null) {
 
-                    MediaController mediaController= new MediaController(UpdateProgressFragment.this.getActivity());
-                    mediaController.setAnchorView(videoView);
-                    //Uri uri=Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.one);
-                    videoView.setMediaController(mediaController);
-                    videoView.setVideoURI(selectedImageUri);
-                    videoView.requestFocus();
+                MediaController mediaController= new MediaController(UpdateProgressFragment.this.getActivity());
+                mediaController.setAnchorView(videoView);
+                //Uri uri=Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.one);
+                videoView.setMediaController(mediaController);
+                videoView.setVideoURI(selectedImageUri);
+                videoView.requestFocus();
 
-                    videoView.start();
+                videoView.start();
 
-                //}
             }
         }
     }
@@ -155,7 +154,6 @@ public class UpdateProgressFragment extends Fragment {
             String[] proj = { MediaStore.Images.Media.DATA };
             cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
             int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
             return cursor.getString(column_index);
         } finally {
             if (cursor != null) {
