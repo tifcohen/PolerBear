@@ -73,7 +73,7 @@ public class Login extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<User> call, Response<User> response) {
                             User user = response.body();
-                            session.createLoginSession(user.getUserId().toString(),user.getUserName(),user.getUserEmail(),user.getUserBirthDate(), user.getUserLevel().toString());
+                            session.createLoginSession(user.getUserId().toString(),user.getUserName(),user.getUserEmail(),user.getUserBirthDate(), user.getUserLevel().toString(), user.getUserSex());
                             Intent intent = new Intent(getApplicationContext(), MyProfile.class);
                             startActivity(intent);
                             finish();

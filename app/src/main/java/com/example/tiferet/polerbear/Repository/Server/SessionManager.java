@@ -35,6 +35,7 @@ public class SessionManager {
     public static final String KEY_EMAIL = "email";
     public static final String KEY_BIRTHDATE = "birthdate";
     public static final String KEY_LEVEL = "level";
+    public static final String KEY_SEX = "sex";
 
     public SessionManager(Context context){
         this._context = context;
@@ -46,7 +47,7 @@ public class SessionManager {
         return pref.getBoolean(IS_LOGIN, false);
     }
 
-    public void createLoginSession(String userId, String name, String email, String birthdate, String level){
+    public void createLoginSession(String userId, String name, String email, String birthdate, String level, String sex){
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
 
@@ -55,10 +56,33 @@ public class SessionManager {
         editor.putString(KEY_EMAIL, email);
         editor.putString(KEY_BIRTHDATE, birthdate);
         editor.putString(KEY_LEVEL, level);
+        editor.putString(KEY_SEX, sex);
 
         // commit changes
         editor.commit();
     }
+
+    public void updateSession(String birthdate, String sex){
+        // Storing login value as TRUE
+        editor.putBoolean(IS_LOGIN, true);
+
+        editor.putString(KEY_BIRTHDATE, birthdate);
+        editor.putString(KEY_SEX, sex);
+
+        // commit changes
+        editor.commit();
+    }
+
+    public void updateLevelSession(String level){
+        // Storing login value as TRUE
+        editor.putBoolean(IS_LOGIN, true);
+
+        editor.putString(KEY_LEVEL, level);
+
+        // commit changes
+        editor.commit();
+    }
+
 
     public HashMap<String, String> getUserDetails(){
         HashMap<String, String> user = new HashMap<String, String>();
@@ -68,6 +92,7 @@ public class SessionManager {
         user.put(KEY_EMAIL, pref.getString(KEY_EMAIL, null));
         user.put(KEY_BIRTHDATE, pref.getString(KEY_BIRTHDATE, null));
         user.put(KEY_LEVEL, pref.getString(KEY_LEVEL, null));
+        user.put(KEY_SEX, pref.getString(KEY_SEX, null));
 
         // return user
         return user;

@@ -20,13 +20,12 @@ public interface IUserAPI {
     //193.106.55.28:443/isExisted?user=michael&email=michaelkolet@gmail.com&pwd=1234
     @GET("/isExisted")
     Call<Boolean> isExisted(@Query("user") String user, @Query("pwd") String pwd);
-/*
-    @GET("/addUser")
-    Call<Integer> addUser(@Query("user") String user, @Query("pwd") String pwd, @Query("email") String email,@Query("birthdate") String birthdate, @Query("sex") String sex);
-    //http://193.106.55.28:443/addUser?user=bla&pwd=1234&email=bla@gmail.com&birthdate=1987-07-14&sex=female
-*/
+
     @POST("/addUser")
     Call<Integer> addUser(@Header("Content-Type") String content_type, @Body User user);
+
+    @POST("/updateUser")
+    Call<Void> updateUser(@Header("Content-Type") String content_type, @Body User user);
 
     @GET("/getFollowersCount")
     Call<Integer> getFollowersCount(@Query("user") Integer userId);

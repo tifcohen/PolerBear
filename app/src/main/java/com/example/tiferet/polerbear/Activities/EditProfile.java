@@ -14,10 +14,13 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.example.tiferet.polerbear.API.IUploadFiles;
+import com.example.tiferet.polerbear.API.IUserAPI;
+import com.example.tiferet.polerbear.Picker.Date.DateEditText;
 import com.example.tiferet.polerbear.Picker.Image.ImagePicker;
 import com.example.tiferet.polerbear.R;
 import com.example.tiferet.polerbear.Repository.Server.Repository;
 import com.example.tiferet.polerbear.Repository.Server.SessionManager;
+import com.example.tiferet.polerbear.Repository.Server.User;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -56,6 +59,7 @@ public class EditProfile extends AppCompatActivity {
         session.checkLogin();
         final HashMap<String, String> user = session.getUserDetails();
 
+        final DateEditText date = (DateEditText) findViewById(R.id.editUserBirthDate);
         profilePic = (ImageView) findViewById(R.id.editProfileImage);
         //EditText newPic = (EditText) findViewById(R.id.addProfilePic);
         final Spinner sexDropdown = (Spinner) findViewById(R.id.dropdown);
@@ -63,6 +67,7 @@ public class EditProfile extends AppCompatActivity {
         sexAdapter.setDropDownViewResource(R.layout.dropdown_items);
         sexDropdown.setAdapter(sexAdapter);
 
+        date.setText(user.get(SessionManager.KEY_BIRTHDATE));
 
         profilePic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,26 +83,28 @@ public class EditProfile extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final IUserAPI userAPI = Repository.getInstance().retrofit.create(IUserAPI.class);
+                final User updatedUser = new User();
+                updatedUser.setUserId(Integer.parseInt(user.get(SessionManager.KEY_ID)));
+                updatedUser.setUserSex(sexDropdown.getSelectedItem().toString());
+                updatedUser.setUserBirthDate(date.getText().toString());
+
+                Call<Void> call = userAPI.updateUser("application/json", updatedUser);
+                call.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        session.updateSession(updatedUser.getUserBirthDate(), updatedUser.getUserSex());
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+
+                    }
+                });
                 if (bitmap!=null){
                     File file = persistImage(bitmap, "name");
                     updateImageToServer(file, user);
-
-//                    RequestBody fbody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-//                    Log.d("Uplaod", String.valueOf(bitmap));
-//                    final Call<Void> upload = apiUpload.addProfilePic(user.get(SessionManager.KEY_ID), fbody);
-//                    upload.enqueue(new Callback<Void>() {
-//                        @Override
-//                        public void onResponse(Call<Void> call, Response<Void> response) {
-//                            Log.d("Uplaod", "Sucess");
-//                        }
-//
-//                        @Override
-//                        public void onFailure(Call<Void> call, Throwable t) {
-//                            Log.d("Uplaod", "FAIL");
-//                        }
-//                    });
                 }
-
                 onBackPressed();
                 finish();
             }
