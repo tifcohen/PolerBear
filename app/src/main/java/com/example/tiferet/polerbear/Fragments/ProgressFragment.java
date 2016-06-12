@@ -1,22 +1,31 @@
 package com.example.tiferet.polerbear.Fragments;
 
 import android.app.Fragment;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.VideoView;
 
+import com.bumptech.glide.Glide;
 import com.example.tiferet.polerbear.API.ITricksAPI;
+import com.example.tiferet.polerbear.API.IUploadFiles;
 import com.example.tiferet.polerbear.R;
 import com.example.tiferet.polerbear.Repository.Server.Repository;
 import com.example.tiferet.polerbear.Repository.Server.SessionManager;
 import com.example.tiferet.polerbear.Repository.Server.Trick;
 import com.example.tiferet.polerbear.Repository.Server.TrickForUser;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -89,7 +98,7 @@ public class ProgressFragment extends Fragment {
 
                 Collections.sort(tricks, new Comparator<TrickForUser>() {
                     public int compare(TrickForUser t1, TrickForUser t2) {
-                        return t1.getDate().compareTo(t2.getDate());
+                        return t2.getDate().compareTo(t1.getDate());
                     }
                 });
                 sinceDate.setText("Started on: "+tricks.get(0).getDate());
@@ -136,15 +145,53 @@ public class ProgressFragment extends Fragment {
 
             final TextView trickDate = (TextView) convertView.findViewById(R.id.progressDate);
             final TextView comment = (TextView) convertView.findViewById(R.id.trickProgressComments);
-            /*final ImageView stars = (ImageView) convertView.findViewById(R.id.stars);
-            final TextView page = (TextView) convertView.findViewById(R.id.pageTextView);
-            final TextView action = (TextView) convertView.findViewById(R.id.actionTextView);
-            final TextView action2 = (TextView) convertView.findViewById(R.id.action2TextView);
-            final ImageView userProfileImage = (ImageView) convertView.findViewById(R.id.userProfileImage);*/
+            final VideoView videoview = (VideoView) convertView.findViewById(R.id.progressVideo);
+            final ProgressBar spinner = (ProgressBar) convertView.findViewById(R.id.videoSpinner);
+            final ImageView thumbnail = (ImageView) convertView.findViewById(R.id.thumbnail);
 
             TrickForUser trick = tricks.get(position);
             trickDate.setText(trick.getDate());
             comment.setText(trick.getComment());
+            spinner.setVisibility(View.VISIBLE);
+
+            final IUploadFiles api = Repository.getInstance().retrofit.create(IUploadFiles.class);
+            final Call<String> callVideo = api.getFile(trick.getTrickPic());
+            callVideo.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    final String VideoURL = response.body();
+
+                    try {
+                        spinner.setVisibility(View.GONE);
+                        // Start the MediaController
+                        MediaController mediacontroller = new MediaController(getActivity());
+                        mediacontroller.setAnchorView(videoview);
+                        // Get the URL from String VideoURL
+                        Uri video = Uri.parse(VideoURL);
+                        videoview.setMediaController(mediacontroller);
+                        videoview.setVideoURI(video);
+
+                    } catch (Exception e) {
+                        Log.e("Error", e.getMessage());
+                        e.printStackTrace();
+                    }
+
+                    videoview.requestFocus();
+                    videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                        // Close the progress bar and play the video
+                        public void onPrepared(MediaPlayer mp) {
+                            Glide.with(getActivity().getApplicationContext()).load(Uri.fromFile(new File(VideoURL))).into(thumbnail);//TODO
+                            videoview.pause();
+                        }
+                    });
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    Log.d("show video", t.getMessage());
+                }
+            });
+
 
             return convertView;
         }
