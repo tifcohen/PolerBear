@@ -23,11 +23,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.tiferet.polerbear.API.ITricksAPI;
+import com.example.tiferet.polerbear.API.IUploadFiles;
 import com.example.tiferet.polerbear.API.IUserAPI;
 import com.example.tiferet.polerbear.R;
 import com.example.tiferet.polerbear.Repository.Server.Repository;
 import com.example.tiferet.polerbear.Repository.Server.SessionManager;
 import com.example.tiferet.polerbear.Repository.Server.TrickForUser;
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
@@ -43,6 +45,9 @@ public class MyProfile extends AppCompatActivity {
     final Context context = this;
     List<TrickForUser> tricks;
     SessionManager session;
+    final public static int UPDATE_PROGRESS = 123;
+    final public static int EDIT_PROFILE = 456;
+    ListView trickList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +60,7 @@ public class MyProfile extends AppCompatActivity {
         session.checkLogin();
         HashMap<String, String> user = session.getUserDetails();
 
+        final ImageView profilePic = (ImageView) findViewById(R.id.myProfilePicture);
         TextView username = (TextView) findViewById(R.id.myProfileUsername);
         TextView userLevel = (TextView) findViewById(R.id.myProfileLevelView);
         final TextView userFollowers = (TextView) findViewById(R.id.myProfileFollowers);
@@ -68,9 +74,32 @@ public class MyProfile extends AppCompatActivity {
         if (user.get(SessionManager.KEY_ID).equals(null)){
             userId=0;
         }
-        final Call<Integer> callUser = apiUser.getFollowersCount(userId);
-        //final Call<Integer> callUser = apiUser.getFollowersCount(Integer.parseInt(user.get(SessionManager.KEY_ID)));
 
+        Call<String> picRefCall = apiUser.getUserProfilePicName(user.get(SessionManager.KEY_ID));
+        picRefCall.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                final IUploadFiles apiPic = Repository.getInstance().retrofit.create(IUploadFiles.class);
+                Call<String> picCall = apiPic.getFile(response.body());
+                picCall.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        UrlImageViewHelper.setUrlDrawable(profilePic, response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        Log.d("Profile Pic", t.getMessage());
+                    }
+                });
+            }
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.d("Profile Pic ref", t.getMessage());
+            }
+        });
+
+        final Call<Integer> callUser = apiUser.getFollowersCount(userId);
         callUser.enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -87,7 +116,7 @@ public class MyProfile extends AppCompatActivity {
             }
         });
 
-        final ListView trickList = (ListView) findViewById(R.id.trickInProgressList);
+        trickList = (ListView) findViewById(R.id.trickInProgressList);
         ITricksAPI apiTrick = Repository.getInstance().retrofit.create(ITricksAPI.class);
         Call<List<TrickForUser>> trickCall = apiTrick.getInProgress(Integer.parseInt(user.get(SessionManager.KEY_ID)));
 
@@ -113,12 +142,13 @@ public class MyProfile extends AppCompatActivity {
         trickList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("TAG", "row selected" + position);
+                Log.d("My Profile", "row selected " + position);
                 TrickForUser trick = tricks.get(position);
                 Intent intent = new Intent(getApplicationContext(), Progress.class);
                 intent.putExtra("trickId", trick.getTrickId().toString());
                 //intent.putExtra("trickName", trick.getTrickName());
-                startActivity(intent);
+                //startActivity(intent);
+                startActivityForResult(intent, UPDATE_PROGRESS);
             }
         });
 
@@ -229,6 +259,35 @@ public class MyProfile extends AppCompatActivity {
                 return true;
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        HashMap<String, String> user = session.getUserDetails();
+        if (requestCode == UPDATE_PROGRESS) {
+            ITricksAPI apiTrick = Repository.getInstance().retrofit.create(ITricksAPI.class);
+            Call<List<TrickForUser>> trickCall = apiTrick.getInProgress(Integer.parseInt(user.get(SessionManager.KEY_ID)));
+
+            trickCall.enqueue(new Callback<List<TrickForUser>>() {
+                @Override
+                public void onResponse(Call<List<TrickForUser>> call, Response<List<TrickForUser>> response) {
+                    tricks = response.body();
+                    TricksInProgressAdapter adapter = new TricksInProgressAdapter();
+                    trickList.setAdapter(adapter);
+                }
+
+                @Override
+                public void onFailure(Call<List<TrickForUser>> call, Throwable t) {
+
+                }
+            });
+        }
+
+        if (requestCode == EDIT_PROFILE) {
+
+        }
+    }
+
 
     class TricksInProgressAdapter extends BaseAdapter {
 

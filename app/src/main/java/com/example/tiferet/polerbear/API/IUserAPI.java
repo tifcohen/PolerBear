@@ -29,4 +29,9 @@ public interface IUserAPI {
 
     @GET("/getFollowersCount")
     Call<Integer> getFollowersCount(@Query("user") Integer userId);
+
+    @GET("/getUserProfilePicName")
+    Call<String> getUserProfilePicName(@Query("userId") String userId);
+
+
 }

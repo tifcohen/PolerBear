@@ -2,7 +2,6 @@ package com.example.tiferet.polerbear.Fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
@@ -18,6 +17,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -94,6 +94,7 @@ public class UpdateProgressFragment extends Fragment {
         session = new SessionManager(getActivity().getApplicationContext());
         final HashMap<String, String> user = session.getUserDetails();
 
+        final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         Button saveBtn = (Button) view.findViewById(R.id.saveBtn);
         Button cancelBtn = (Button) view.findViewById(R.id.cancelBtn);
         Button upload = (Button) view.findViewById(R.id.uploadBtn);
@@ -104,6 +105,7 @@ public class UpdateProgressFragment extends Fragment {
         videoView = (VideoView) view.findViewById(R.id.videoView);
         final EditText comment = (EditText) view.findViewById(R.id.commentsBox);
 
+        progressBar.setVisibility(View.GONE);
         videoView.setVisibility(View.GONE);
         trickImage.setVisibility(View.GONE);
 
@@ -140,6 +142,7 @@ public class UpdateProgressFragment extends Fragment {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
                 TrickForUser updatedProgress = new TrickForUser();
                 updatedProgress.setUserId(Integer.parseInt(userId));
                 updatedProgress.setUserName(user.get(SessionManager.KEY_NAME));
@@ -148,9 +151,9 @@ public class UpdateProgressFragment extends Fragment {
                 updatedProgress.setDate(progressDate.getText().toString());
                 updatedProgress.setComment(comment.getText().toString());
                 if(cb.isChecked()){
-                    updatedProgress.setIsFinised(1);
+                    updatedProgress.setIsFinished(1);
                 }else {
-                    updatedProgress.setIsFinised(0);
+                    updatedProgress.setIsFinished(0);
                 }
 
                 final ITricksAPI api = Repository.getInstance().retrofit.create(ITricksAPI.class);
@@ -159,16 +162,19 @@ public class UpdateProgressFragment extends Fragment {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         Toast.makeText(getContext(), "Progress updated successfully", Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.GONE);
+                        getActivity().onBackPressed();
                     }
 
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
+                        progressBar.setVisibility(View.GONE);
                         Toast.makeText(getContext(), "Update progress failed, please try again", Toast.LENGTH_SHORT).show();
                     }
                 });
 
                 if(selectedImageUri == null) {
-                    Toast.makeText(getActivity().getApplicationContext(), "No Video selected", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), "Please select a video to upload", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 //String path = getRealPathFromURI(getActivity().getApplicationContext(),selectedImageUri);
@@ -176,8 +182,6 @@ public class UpdateProgressFragment extends Fragment {
                 File file = new File(path);
                 updateImageToServer(file, userId, trickId);
                 selectedImageUri = null;
-
-                getActivity().onBackPressed();
             }
         });
 
@@ -214,7 +218,7 @@ public class UpdateProgressFragment extends Fragment {
             }
         }
     }
-
+/*
     public String getRealPathFromURI(Context context, Uri contentUri) {
         Cursor cursor = null;
         String tmp;
@@ -229,7 +233,7 @@ public class UpdateProgressFragment extends Fragment {
                 cursor.close();
             }
         }
-    }
+    }*/
 
     private String getRealPathFromURI(Uri contentUri) {
         String[] proj = { MediaStore.Images.Media.DATA };
@@ -267,11 +271,13 @@ public class UpdateProgressFragment extends Fragment {
             @Override
             public void onResponse(Call<ResponseBody> call,
                                    Response<ResponseBody> response) {
+//                Toast.makeText(getActivity().getApplicationContext(), "Video uploaded successfully", Toast.LENGTH_SHORT).show();
                 Log.v("Upload", "success");
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+   //             Toast.makeText(getActivity().getApplicationContext(), "Something went wrong, please try again", Toast.LENGTH_SHORT).show();
                 Log.e("Upload error:", t.getMessage());
             }
         });

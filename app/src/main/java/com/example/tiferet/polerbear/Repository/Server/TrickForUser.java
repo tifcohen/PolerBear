@@ -41,8 +41,8 @@ public class TrickForUser {
     private String comment;
     @JsonProperty("trickPic")
     private String trickPic;
-    @JsonProperty("isFinised")
-    private Integer isFinised;
+    @JsonProperty("isFinished")
+    private Integer isFinished;
     @JsonProperty("doneBefore")
     private Integer doneBefore;
     @JsonIgnore
@@ -191,21 +191,21 @@ public class TrickForUser {
     /**
      *
      * @return
-     * The isFinised
+     * The isFinished
      */
-    @JsonProperty("isFinised")
-    public Integer getIsFinised() {
-        return isFinised;
+    @JsonProperty("isFinished")
+    public Integer getIsFinished() {
+        return isFinished;
     }
 
     /**
      *
-     * @param isFinised
-     * The isFinised
+     * @param isFinished
+     * The isFinished
      */
-    @JsonProperty("isFinised")
-    public void setIsFinised(Integer isFinised) {
-        this.isFinised = isFinised;
+    @JsonProperty("isFinished")
+    public void setIsFinished(Integer isFinished) {
+        this.isFinished = isFinished;
     }
 
     /**
