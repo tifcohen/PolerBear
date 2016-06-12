@@ -21,32 +21,4 @@ public class Repository {
         return instance;
     }
 
-/*
-    public Trick foo() {
-        int trickId = 1;
-        final Trick[] trick = new Trick[1];
-        ITricksAPI api = retrofit.create(ITricksAPI.class);
-        Call<Trick> call = api.getTrick(trickId);
-
-        call.enqueue(new Callback<Trick>() {
-            @Override
-            public void onResponse(Call<Trick> call, Response<Trick> response) {
-                Log.d("TAG", "pass");
-                trick[0] = response.body();
-                Log.d("TAG", ""+trick[0].getTrickName());
-            }
-
-            @Override
-            public void onFailure(Call<Trick> call, Throwable t) {
-                Log.d("TAG", "fail");
-            }
-        });
-
-        String user = "michael";
-        String email = "michaelkolet@gmail.com";
-        String pwd = "1234";
-
-
-        return trick[0];
-    }*/
 }

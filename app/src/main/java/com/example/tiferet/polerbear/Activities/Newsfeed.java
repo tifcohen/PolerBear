@@ -13,7 +13,7 @@ import android.view.View;
 import com.example.tiferet.polerbear.Fragments.GlobalNewsfeedFragment;
 import com.example.tiferet.polerbear.Fragments.PersonalNewsfeedFragment;
 import com.example.tiferet.polerbear.R;
-import com.example.tiferet.polerbear.Repository.Local.User;
+import com.example.tiferet.polerbear.Repository.Server.User;
 
 public class Newsfeed extends AppCompatActivity implements GlobalNewsfeedFragment.GlobalNewsfeedFragmentDelegate, PersonalNewsfeedFragment.PersonalNewsfeedFragmentDelegate{
 
@@ -44,10 +44,9 @@ public class Newsfeed extends AppCompatActivity implements GlobalNewsfeedFragmen
             public void onClick(View view) {
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 Log.d("TAG", "fab pressed");
-                if(current.equals("personal")) {
+                if (current.equals("personal")) {
                     OnGlobalNewsfeed();
-                }
-                else{
+                } else {
                     OnPersonalNewsfeed();
                 }
             }
@@ -66,14 +65,6 @@ public class Newsfeed extends AppCompatActivity implements GlobalNewsfeedFragmen
         invalidateOptionsMenu();
     }
 
-    @Override
-    public void onClickUsername(View v) {
-        User user = (User) v.getTag();
-        Intent intent = new Intent(getApplicationContext(), MyProfile.class);
-        intent.putExtra("fragment", "user");
-        intent.putExtra("userId", user.getUserId());
-        startActivity(intent);
-    }
 
     @Override
     public void OnGlobalNewsfeed() {
@@ -87,4 +78,13 @@ public class Newsfeed extends AppCompatActivity implements GlobalNewsfeedFragmen
         ft.commit();
         invalidateOptionsMenu();
     }
+
+    public void onClickUsername(View v) {
+        User user = (User) v.getTag();
+        Intent intent = new Intent(getApplicationContext(), MyProfile.class);
+        intent.putExtra("fragment", "user");
+        intent.putExtra("userId", "40");
+        startActivity(intent);
+    }
+
 }

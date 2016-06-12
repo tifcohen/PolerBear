@@ -47,7 +47,7 @@ public class SessionManager {
         return pref.getBoolean(IS_LOGIN, false);
     }
 
-    public void createLoginSession(String userId, String name, String email, String birthdate, String level, String sex){
+    public void createLoginSession(String userId, String name, String email, String birthdate, String sex){
         // Storing login value as TRUE
         editor.putBoolean(IS_LOGIN, true);
 
@@ -55,7 +55,7 @@ public class SessionManager {
         editor.putString(KEY_NAME, name);
         editor.putString(KEY_EMAIL, email);
         editor.putString(KEY_BIRTHDATE, birthdate);
-        editor.putString(KEY_LEVEL, level);
+        //editor.putString(KEY_LEVEL, level);
         editor.putString(KEY_SEX, sex);
 
         // commit changes

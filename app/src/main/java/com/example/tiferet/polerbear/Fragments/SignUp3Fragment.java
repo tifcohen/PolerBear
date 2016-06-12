@@ -9,17 +9,23 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.tiferet.polerbear.API.ITricksAPI;
 import com.example.tiferet.polerbear.R;
-import com.example.tiferet.polerbear.Repository.Local.Trick;
-import com.example.tiferet.polerbear.Repository.Local.TrickDB;
+import com.example.tiferet.polerbear.Repository.Server.Repository;
+import com.example.tiferet.polerbear.Repository.Server.Trick;
 import com.example.tiferet.polerbear.Repository.Server.User;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SignUp3Fragment extends Fragment {
     private User user;
@@ -41,7 +47,8 @@ public class SignUp3Fragment extends Fragment {
     }
 
     List<Trick> tricks;
-    String[] levelPicker = new String[]{"1", "2", "3", "4", "5"};
+    List<Trick> doneBefore;
+    String[] levelPicker = new String[]{"1", "2", "3", "4"};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,6 +67,8 @@ public class SignUp3Fragment extends Fragment {
         //levelDropdown.setAdapter(levelAdapter);
         final ListView trickList = (ListView) view.findViewById(R.id.trickListForRegistration);
 
+        trickList.setVisibility(View.GONE);
+
         //adapter = ArrayAdapter.createFromResource(this, R.array.chunks, android.R.layout.simple_spinner_item);
         levelAdapter.setDropDownViewResource(R.layout.dropdown_items);
         levelDropdown.setAdapter(levelAdapter);
@@ -68,11 +77,21 @@ public class SignUp3Fragment extends Fragment {
         levelDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                tricks = TrickDB.getInstance().getAllTricks();
-                //spinner.setVisibility(View.VISIBLE);
-                LevelTricksAdapter adapter = new LevelTricksAdapter();
-                trickList.setAdapter(adapter);
-                //spinner.setVisibility(View.GONE);
+                ITricksAPI apiTrick = Repository.getInstance().retrofit.create(ITricksAPI.class);
+                Call<List<Trick>> trickCall = apiTrick.checkLevel(position);
+                trickCall.enqueue(new Callback<List<Trick>>() {
+                    @Override
+                    public void onResponse(Call<List<Trick>> call, Response<List<Trick>> response) {
+                        trickList.setVisibility(View.VISIBLE);
+                        tricks = response.body();
+                        LevelTricksAdapter adapter = new LevelTricksAdapter();
+                        trickList.setAdapter(adapter);
+                    }
+                    @Override
+                    public void onFailure(Call<List<Trick>> call, Throwable t) {
+
+                    }
+                });
             }
 
             @Override
@@ -86,6 +105,7 @@ public class SignUp3Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (delegate != null) {
+
                     delegate.OnSignUp4(user);
                 }
             }
@@ -127,17 +147,27 @@ public class SignUp3Fragment extends Fragment {
                 convertView = inflater.inflate(R.layout.calculate_level_single_trick, null);
             }
             final TextView trickName = (TextView) convertView.findViewById(R.id.trickName);
-            /*final TextView bookName = (TextView) convertView.findViewById(R.id.bookName);
-            final TextView bookReview = (TextView) convertView.findViewById(R.id.bookReview);
+            final CheckBox cb = (CheckBox) convertView.findViewById(R.id.checkbox);
+            /*final TextView bookReview = (TextView) convertView.findViewById(R.id.bookReview);
             final ImageView stars = (ImageView) convertView.findViewById(R.id.stars);
             final TextView page = (TextView) convertView.findViewById(R.id.pageTextView);
             final TextView action = (TextView) convertView.findViewById(R.id.actionTextView);
             final TextView action2 = (TextView) convertView.findViewById(R.id.action2TextView);
             final ImageView userProfileImage = (ImageView) convertView.findViewById(R.id.userProfileImage);*/
 
-            Trick trick = tricks.get(position);
+            final Trick trick = tricks.get(position);
             trickName.setText(trick.getTrickName());
 
+            cb.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (cb.isChecked()) {
+                        doneBefore.add(trick);
+                    } else {
+                        doneBefore.remove(trick);
+                    }
+                }
+            });
             return convertView;
         }
     }

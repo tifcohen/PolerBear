@@ -32,6 +32,4 @@ public interface IUserAPI {
 
     @GET("/getUserProfilePicName")
     Call<String> getUserProfilePicName(@Query("userId") String userId);
-
-
 }

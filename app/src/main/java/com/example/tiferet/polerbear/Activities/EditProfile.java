@@ -21,6 +21,7 @@ import com.example.tiferet.polerbear.R;
 import com.example.tiferet.polerbear.Repository.Server.Repository;
 import com.example.tiferet.polerbear.Repository.Server.SessionManager;
 import com.example.tiferet.polerbear.Repository.Server.User;
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -43,6 +44,7 @@ public class EditProfile extends AppCompatActivity {
     String[] sexPickerDropdown = new String[]{"Male", "Female"};
     SessionManager session;
     Bitmap bitmap;
+    int flag = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,13 +74,47 @@ public class EditProfile extends AppCompatActivity {
             sexDropdown.setSelection(spinnerPosition);
         }
 
+        IUserAPI apiUser = Repository.getInstance().retrofit.create(IUserAPI.class);
+        Call<String> picRefCall = apiUser.getUserProfilePicName(user.get(SessionManager.KEY_ID));
+        picRefCall.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                final IUploadFiles apiPic = Repository.getInstance().retrofit.create(IUploadFiles.class);
+                Call<String> picCall = apiPic.getFile(response.body());
+                picCall.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        if(response.body()==null){
+                            if(user.get(SessionManager.KEY_SEX).equals("Female")){
+                                profilePic.setImageDrawable(getResources().getDrawable(R.drawable.female));
+                            }else{
+                                profilePic.setImageDrawable(getResources().getDrawable(R.drawable.male));
+                            }
+                        }else{
+                            UrlImageViewHelper.setUrlDrawable(profilePic, response.body());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        Log.d("Profile Pic", t.getMessage());
+                    }
+                });
+            }
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.d("Profile Pic ref", t.getMessage());
+            }
+        });
+
 
         date.setText(user.get(SessionManager.KEY_BIRTHDATE));
 
         profilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // only photos (no videos) - camera OR gallery
+                flag = 1;
+                // only photos (no videos) - camera OR gallery
                 Intent chooseImageIntent = ImagePicker.getPickImageIntent(EditProfile.this.getApplicationContext());
                 startActivityForResult(chooseImageIntent, PICK_IMAGE_ID);
 
@@ -100,6 +136,8 @@ public class EditProfile extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         session.updateSession(updatedUser.getUserBirthDate(), updatedUser.getUserSex());
+                        onBackPressed();
+                        finish();
                     }
 
                     @Override
@@ -107,12 +145,10 @@ public class EditProfile extends AppCompatActivity {
 
                     }
                 });
-                if (bitmap!=null){
+                if (bitmap!=null && flag==1){
                     File file = persistImage(bitmap, "name");
                     updateImageToServer(file, user);
                 }
-                onBackPressed();
-                finish();
             }
         });
 

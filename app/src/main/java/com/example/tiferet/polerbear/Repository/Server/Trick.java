@@ -17,8 +17,9 @@ import javax.annotation.Generated;
 @JsonPropertyOrder({
         "trickId",
         "trickName",
-        "trickLevel"
-})
+        "trickLevel",
+        "trickVideoName"
+    })
 public class Trick {
 
     @JsonProperty("trickId")
@@ -27,6 +28,8 @@ public class Trick {
     private String trickName;
     @JsonProperty("trickLevel")
     private Integer trickLevel;
+    @JsonProperty("trickVideoName")
+    private String trickVideoName;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -88,6 +91,26 @@ public class Trick {
     @JsonProperty("trickLevel")
     public void setTrickLevel(Integer trickLevel) {
         this.trickLevel = trickLevel;
+    }
+
+    /**
+     *
+     * @return
+     * The trickVideoName
+     */
+    @JsonProperty("trickVideoName")
+    public String getTrickVideoName() {
+        return trickVideoName;
+    }
+
+    /**
+     *
+     * @param trickVideoName
+     * The trickVideoName
+     */
+    @JsonProperty("trickVideoName")
+    public void setTrickVideoName(String trickVideoName) {
+        this.trickVideoName = trickVideoName;
     }
 
     @JsonAnyGetter

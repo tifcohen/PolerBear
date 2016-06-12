@@ -73,6 +73,7 @@
                 android:focusable="false"/>
         </LinearLayout>
     <VideoView
+        android:layout_gravity="center_horizontal"
         android:layout_below="@+id/username"
         android:layout_width="match_parent"
         android:layout_height="250dp"

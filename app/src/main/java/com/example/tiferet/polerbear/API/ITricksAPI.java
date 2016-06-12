@@ -38,9 +38,19 @@ public interface ITricksAPI {
     @GET("/getAllTricksForUsers")
     Call<List<TrickForUser>> getAllTricksForUsers();
 
+    //Llist<TrickForUser> getAllTricksForFollowingUsers(userId)
+    @GET("/getAllTricksForFollowingUsers")
+    Call<List<TrickForUser>> getAllTricksForFollowingUsers(@Query("user") int userId);
+
     //localhost:2070/addProgress?user={userId}&trick={trickId}&pic={picRef}&date={dd/mm/yy}&comment={comment}
     @POST("/addProgress")
     Call<Void> addProgress(@Header("Content-Type") String content_type, @Body TrickForUser updatedProgress);
 
+    @GET("/generateTrick")
+    Call<Trick> generateTrick(@Query("user") int userId);
+
+    //localhost:2070/checklevel?level={level}
+    @GET("/checkLevel")
+    Call<List<Trick>> checkLevel(@Query("level") int level);
 }
 

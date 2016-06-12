@@ -73,6 +73,11 @@
                 android:focusable="false"/>
         </LinearLayout>
     </RelativeLayout>
+    <VideoView
+        android:layout_gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:id="@+id/trickVideo" />
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -80,7 +85,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:id="@+id/trickVideo"
+        android:id="@+id/trickThumbnail"
         android:src="@drawable/placeholder" />
     <Button
         android:layout_width="wrap_content"

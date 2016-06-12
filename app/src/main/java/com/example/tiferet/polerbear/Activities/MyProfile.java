@@ -48,6 +48,7 @@ public class MyProfile extends AppCompatActivity {
     final public static int UPDATE_PROGRESS = 123;
     final public static int EDIT_PROFILE = 456;
     ListView trickList;
+    ImageView profilePic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +59,9 @@ public class MyProfile extends AppCompatActivity {
 
         session = new SessionManager(getApplicationContext());
         session.checkLogin();
-        HashMap<String, String> user = session.getUserDetails();
+        final HashMap<String, String> user = session.getUserDetails();
 
-        final ImageView profilePic = (ImageView) findViewById(R.id.myProfilePicture);
+        profilePic = (ImageView) findViewById(R.id.myProfilePicture);
         TextView username = (TextView) findViewById(R.id.myProfileUsername);
         TextView userLevel = (TextView) findViewById(R.id.myProfileLevelView);
         final TextView userFollowers = (TextView) findViewById(R.id.myProfileFollowers);
@@ -84,7 +85,15 @@ public class MyProfile extends AppCompatActivity {
                 picCall.enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
-                        UrlImageViewHelper.setUrlDrawable(profilePic, response.body());
+                        if(response.body()==null){
+                            if(user.get(SessionManager.KEY_SEX).equals("Female")){
+                                profilePic.setImageDrawable(getResources().getDrawable(R.drawable.female));
+                            }else{
+                                profilePic.setImageDrawable(getResources().getDrawable(R.drawable.male));
+                            }
+                        }else{
+                            UrlImageViewHelper.setUrlDrawable(profilePic, response.body());
+                        }
                     }
 
                     @Override
@@ -179,7 +188,8 @@ public class MyProfile extends AppCompatActivity {
         btnWarmup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SingleTrick.class);
+                Intent intent = new Intent(getApplicationContext(), NewTrick.class);
+                intent.putExtra("ref", "warmup");
                 startActivity(intent);
             }
         });
@@ -211,6 +221,7 @@ public class MyProfile extends AppCompatActivity {
                         .setPositiveButton("Do it!", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 Intent intent = new Intent(getApplicationContext(), NewTrick.class);
+                                intent.putExtra("ref", "Do it!");
                                 startActivity(intent);
                                 Snackbar.make(v, "Do it!", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                             }
@@ -218,6 +229,7 @@ public class MyProfile extends AppCompatActivity {
                         .setNegativeButton("I'll do it", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 Intent intent = new Intent(getApplicationContext(), NewTrick.class);
+                                intent.putExtra("ref", "I'll do it");
                                 startActivity(intent);
                                 Snackbar.make(v, "I'll do it", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                             }
@@ -247,7 +259,7 @@ public class MyProfile extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.editBtn: {
                 Intent intent = new Intent(getApplicationContext(), EditProfile.class);
-                startActivity(intent);
+                startActivityForResult(intent, EDIT_PROFILE);
                 return true;
             }
             case R.id.logoutBtn: {
@@ -263,7 +275,7 @@ public class MyProfile extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        HashMap<String, String> user = session.getUserDetails();
+        final HashMap<String, String> user = session.getUserDetails();
         if (requestCode == UPDATE_PROGRESS) {
             ITricksAPI apiTrick = Repository.getInstance().retrofit.create(ITricksAPI.class);
             Call<List<TrickForUser>> trickCall = apiTrick.getInProgress(Integer.parseInt(user.get(SessionManager.KEY_ID)));
@@ -284,7 +296,38 @@ public class MyProfile extends AppCompatActivity {
         }
 
         if (requestCode == EDIT_PROFILE) {
+            IUserAPI apiUser = Repository.getInstance().retrofit.create(IUserAPI.class);
+            Call<String> picRefCall = apiUser.getUserProfilePicName(user.get(SessionManager.KEY_ID));
+            picRefCall.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    final IUploadFiles apiPic = Repository.getInstance().retrofit.create(IUploadFiles.class);
+                    Call<String> picCall = apiPic.getFile(response.body());
+                    picCall.enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            if(response.body()==null){
+                                if(user.get(SessionManager.KEY_SEX).equals("Female")){
+                                    profilePic.setImageDrawable(getResources().getDrawable(R.drawable.female));
+                                }else{
+                                    profilePic.setImageDrawable(getResources().getDrawable(R.drawable.male));
+                                }
+                            }else{
+                                UrlImageViewHelper.setUrlDrawable(profilePic, response.body());
+                            }
+                        }
 
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+                            Log.d("Profile Pic", t.getMessage());
+                        }
+                    });
+                }
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    Log.d("Profile Pic ref", t.getMessage());
+                }
+            });
         }
     }
 

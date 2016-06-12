@@ -5,6 +5,15 @@
     android:layout_height="match_parent"
     tools:context="com.example.tiferet.polerbear.Fragments.PersonalNewsfeedFragment">
 
+    <TextView
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You are not following anyone"/>
     <ProgressBar
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"

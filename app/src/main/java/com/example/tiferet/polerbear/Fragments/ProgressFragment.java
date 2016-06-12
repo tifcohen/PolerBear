@@ -16,7 +16,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-import com.bumptech.glide.Glide;
 import com.example.tiferet.polerbear.API.ITricksAPI;
 import com.example.tiferet.polerbear.API.IUploadFiles;
 import com.example.tiferet.polerbear.R;
@@ -25,7 +24,6 @@ import com.example.tiferet.polerbear.Repository.Server.SessionManager;
 import com.example.tiferet.polerbear.Repository.Server.Trick;
 import com.example.tiferet.polerbear.Repository.Server.TrickForUser;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -180,7 +178,7 @@ public class ProgressFragment extends Fragment {
                     videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                         // Close the progress bar and play the video
                         public void onPrepared(MediaPlayer mp) {
-                            Glide.with(getActivity().getApplicationContext()).load(Uri.fromFile(new File(VideoURL))).into(thumbnail);//TODO
+                            //Glide.with(getActivity().getApplicationContext()).load(Uri.fromFile(new File(VideoURL))).into(thumbnail);//TODO
                             videoview.pause();
                         }
                     });
@@ -191,7 +189,6 @@ public class ProgressFragment extends Fragment {
                     Log.d("show video", t.getMessage());
                 }
             });
-
 
             return convertView;
         }
