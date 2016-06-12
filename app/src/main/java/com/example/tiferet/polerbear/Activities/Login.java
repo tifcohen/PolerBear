@@ -54,7 +54,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(username.getText().toString().equals("")||pwd.getText().toString().equals("")){
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getApplicationContext());
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(Login.this);
                     alertDialogBuilder.setTitle("Action Failed");
                     alertDialogBuilder.setMessage("Please fill the requested fields").setCancelable(false)
                             .setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {

@@ -18,9 +18,11 @@ import android.widget.Toast;
 import com.example.tiferet.polerbear.API.ITricksAPI;
 import com.example.tiferet.polerbear.R;
 import com.example.tiferet.polerbear.Repository.Server.Repository;
+import com.example.tiferet.polerbear.Repository.Server.SessionManager;
 import com.example.tiferet.polerbear.Repository.Server.Trick;
 import com.example.tiferet.polerbear.Repository.Server.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -47,8 +49,9 @@ public class SignUp3Fragment extends Fragment {
     }
 
     List<Trick> tricks;
-    List<Trick> doneBefore;
-    String[] levelPicker = new String[]{"1", "2", "3", "4"};
+    ArrayList<Trick> doneBefore;
+    String[] levelPicker = new String[]{"Select", "1", "2", "3", "4"};
+    SessionManager session;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,12 +63,15 @@ public class SignUp3Fragment extends Fragment {
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_sign_up3, container, false);
 
+        session = new SessionManager(getActivity().getApplicationContext());
+
         Button nextBtn = (Button) view.findViewById(R.id.nextBtn);
-        Button cancelBtn = (Button) view.findViewById(R.id.cancelBtn);
+        final Button cancelBtn = (Button) view.findViewById(R.id.cancelBtn);
         final Spinner levelDropdown = (Spinner) view.findViewById(R.id.levelDropdown);
         final ArrayAdapter<String> levelAdapter = new ArrayAdapter<String>(getActivity(), R.layout.dropdown_item_selected, levelPicker);
         //levelDropdown.setAdapter(levelAdapter);
         final ListView trickList = (ListView) view.findViewById(R.id.trickListForRegistration);
+        doneBefore = new ArrayList<Trick>();
 
         trickList.setVisibility(View.GONE);
 
@@ -73,11 +79,28 @@ public class SignUp3Fragment extends Fragment {
         levelAdapter.setDropDownViewResource(R.layout.dropdown_items);
         levelDropdown.setAdapter(levelAdapter);
         //spinnerSize.setOnItemSelectedListener(new MyOnItemSelectedListener());
+/*
+        ITricksAPI apiTrick = Repository.getInstance().retrofit.create(ITricksAPI.class);
+        Call<List<Trick>> trickCall = apiTrick.checkLevel(2);
+        trickCall.enqueue(new Callback<List<Trick>>() {
+            @Override
+            public void onResponse(Call<List<Trick>> call, Response<List<Trick>> response) {
+                trickList.setVisibility(View.VISIBLE);
+                tricks = response.body();
+                LevelTricksAdapter adapter = new LevelTricksAdapter();
+                trickList.setAdapter(adapter);
+            }
 
+            @Override
+            public void onFailure(Call<List<Trick>> call, Throwable t) {
+                Log.d("trickList", t.getMessage());
+            }
+        });
+*/
+        final ITricksAPI apiTrick = Repository.getInstance().retrofit.create(ITricksAPI.class);
         levelDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ITricksAPI apiTrick = Repository.getInstance().retrofit.create(ITricksAPI.class);
                 Call<List<Trick>> trickCall = apiTrick.checkLevel(position);
                 trickCall.enqueue(new Callback<List<Trick>>() {
                     @Override
@@ -100,14 +123,25 @@ public class SignUp3Fragment extends Fragment {
                 Toast.makeText(getActivity().getApplicationContext(), "please pick a level", Toast.LENGTH_LONG).show();
             }
         });
-
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (delegate != null) {
+                Call<Integer> trickCall = apiTrick.calLevel(user.getUserId(),doneBefore);
+                trickCall.enqueue(new Callback<Integer>() {
+                    @Override
+                    public void onResponse(Call<Integer> call, Response<Integer> response) {
+                        user.setUserLevel(response.body());
+                        session.updateLevelSession(response.body()+"");
+                        if (delegate != null) {
+                            delegate.OnSignUp4(user);
+                        }
+                    }
 
-                    delegate.OnSignUp4(user);
-                }
+                    @Override
+                    public void onFailure(Call<Integer> call, Throwable t) {
+
+                    }
+                });
             }
         });
 

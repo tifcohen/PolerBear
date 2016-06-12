@@ -9,7 +9,9 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 /**
@@ -52,5 +54,13 @@ public interface ITricksAPI {
     //localhost:2070/checklevel?level={level}
     @GET("/checkLevel")
     Call<List<Trick>> checkLevel(@Query("level") int level);
+
+    //level calLevel(userId, trickList)
+    /*@POST("/calLevel")
+    Call<Integer> calLevel(@Field("userId") int userId, @Field("trickList") List<Trick> doneBefore);*/
+
+    @Multipart
+    @POST("/calLevel")
+    Call<Integer> calLevel(@Part("userId") int userId, @Part("trickList") List<Trick> doneBefore);
 }
 
