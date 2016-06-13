@@ -29,6 +29,7 @@ import com.example.tiferet.polerbear.R;
 import com.example.tiferet.polerbear.Repository.Server.Repository;
 import com.example.tiferet.polerbear.Repository.Server.SessionManager;
 import com.example.tiferet.polerbear.Repository.Server.TrickForUser;
+import com.example.tiferet.polerbear.Repository.Server.User;
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
@@ -42,6 +43,7 @@ import retrofit2.Response;
 
 public class MyProfile extends AppCompatActivity {
 
+    int flag = 0;
     final Context context = this;
     List<TrickForUser> tricks;
     SessionManager session;
@@ -58,111 +60,181 @@ public class MyProfile extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         session = new SessionManager(getApplicationContext());
-        session.checkLogin();
+        //session.checkLogin();
         final HashMap<String, String> user = session.getUserDetails();
-
         profilePic = (ImageView) findViewById(R.id.myProfilePicture);
-        TextView username = (TextView) findViewById(R.id.myProfileUsername);
-        TextView userLevel = (TextView) findViewById(R.id.myProfileLevelView);
+        final TextView username = (TextView) findViewById(R.id.myProfileUsername);
+        final TextView userLevel = (TextView) findViewById(R.id.myProfileLevelView);
         final TextView userFollowers = (TextView) findViewById(R.id.myProfileFollowers);
 
-        username.setText(user.get(SessionManager.KEY_NAME));
-        userLevel.setText("Level: " + user.get(SessionManager.KEY_LEVEL));
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setImageResource(R.drawable.logo_transparent);
 
-        //session.logoutUser();
-        final IUserAPI apiUser = Repository.getInstance().retrofit.create(IUserAPI.class);
-        int userId = Integer.parseInt(user.get(SessionManager.KEY_ID));
-        if (user.get(SessionManager.KEY_ID).equals(null)){
-            userId=0;
-        }
-
-        Call<String> picRefCall = apiUser.getUserProfilePicName(user.get(SessionManager.KEY_ID));
-        picRefCall.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                final IUploadFiles apiPic = Repository.getInstance().retrofit.create(IUploadFiles.class);
-                Call<String> picCall = apiPic.getFile(response.body());
-                picCall.enqueue(new Callback<String>() {
+        final String ref = getIntent().getStringExtra("ref");
+        if(ref!=null) {
+            if (!ref.equals(user.get(SessionManager.KEY_ID))) {
+                flag =1;
+                IUserAPI otherApi = Repository.getInstance().retrofit.create(IUserAPI.class);
+                Call<User> callOther = otherApi.getUser(Integer.parseInt(ref));
+                callOther.enqueue(new Callback<User>() {
                     @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
-                        if(response.body()==null){
-                            if(user.get(SessionManager.KEY_SEX).equals("Female")){
-                                profilePic.setImageDrawable(getResources().getDrawable(R.drawable.female));
-                            }else{
-                                profilePic.setImageDrawable(getResources().getDrawable(R.drawable.male));
+                    public void onResponse(Call<User> call, Response<User> response) {
+                        final User other = response.body();
+                        fab.setVisibility(View.GONE);
+                        username.setText(other.getUserName());
+                        userLevel.setText("Level: " + other.getUserLevel());
+                        Log.d("profile", "other's profile! " + other.getUserId());
+
+                        final IUserAPI apiUser = Repository.getInstance().retrofit.create(IUserAPI.class);
+                        int userId = Integer.parseInt(ref);
+
+                        Call<String> picRefCall = apiUser.getUserProfilePicName(other.getUserId().toString());
+                        picRefCall.enqueue(new Callback<String>() {
+                            @Override
+                            public void onResponse(Call<String> call, Response<String> response) {
+                                final IUploadFiles apiPic = Repository.getInstance().retrofit.create(IUploadFiles.class);
+                                Call<String> picCall = apiPic.getFile(response.body());
+                                picCall.enqueue(new Callback<String>() {
+                                    @Override
+                                    public void onResponse(Call<String> call, Response<String> response) {
+                                        if (response.body() == null) {
+                                            if (other.getUserSex().equals("Female")) {
+                                                profilePic.setImageDrawable(getResources().getDrawable(R.drawable.female));
+                                            } else {
+                                                profilePic.setImageDrawable(getResources().getDrawable(R.drawable.male));
+                                            }
+                                        } else {
+                                            UrlImageViewHelper.setUrlDrawable(profilePic, response.body());
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<String> call, Throwable t) {
+                                        Log.d("Profile Pic", t.getMessage());
+                                    }
+                                });
                             }
-                        }else{
-                            UrlImageViewHelper.setUrlDrawable(profilePic, response.body());
-                        }
+
+                            @Override
+                            public void onFailure(Call<String> call, Throwable t) {
+                                Log.d("Profile Pic ref", t.getMessage());
+                            }
+                        });
+                        final Call<Integer> callUser = apiUser.getFollowersCount(userId);
+                        callUser.enqueue(new Callback<Integer>() {
+                            @Override
+                            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                                if (response.body() == null) {
+                                    userFollowers.setText("This user has no followers");
+                                } else {
+                                    userFollowers.setText(response.body() + " Followers");
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Integer> call, Throwable t) {
+
+                            }
+                        });
                     }
 
                     @Override
-                    public void onFailure(Call<String> call, Throwable t) {
-                        Log.d("Profile Pic", t.getMessage());
+                    public void onFailure(Call<User> call, Throwable t) {
+
                     }
                 });
             }
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                Log.d("Profile Pic ref", t.getMessage());
-            }
-        });
+        }
+        else {
+            username.setText(user.get(SessionManager.KEY_NAME));
+            userLevel.setText("Level: " + user.get(SessionManager.KEY_LEVEL));
 
-        final Call<Integer> callUser = apiUser.getFollowersCount(userId);
-        callUser.enqueue(new Callback<Integer>() {
-            @Override
-            public void onResponse(Call<Integer> call, Response<Integer> response) {
-                if (response.body() == null) {
-                    userFollowers.setText("You don't have any followers");
-                } else {
-                    userFollowers.setText(response.body() + " Followers");
+            //session.logoutUser();
+            final IUserAPI apiUser = Repository.getInstance().retrofit.create(IUserAPI.class);
+            int userId = Integer.parseInt(user.get(SessionManager.KEY_ID));
+            /*if (user.get(SessionManager.KEY_ID).equals(null)){
+                userId=0;
+
+            }*/
+            Call<String> picRefCall = apiUser.getUserProfilePicName(user.get(SessionManager.KEY_ID));
+            picRefCall.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    final IUploadFiles apiPic = Repository.getInstance().retrofit.create(IUploadFiles.class);
+                    Call<String> picCall = apiPic.getFile(response.body());
+                    picCall.enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            if(response.body()==null){
+                                if(user.get(SessionManager.KEY_SEX).equals("Female")){
+                                    profilePic.setImageDrawable(getResources().getDrawable(R.drawable.female));
+                                }else{
+                                    profilePic.setImageDrawable(getResources().getDrawable(R.drawable.male));
+                                }
+                            }else{
+                                UrlImageViewHelper.setUrlDrawable(profilePic, response.body());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+                            Log.d("Profile Pic", t.getMessage());
+                        }
+                    });
                 }
-            }
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    Log.d("Profile Pic ref", t.getMessage());
+                }
+            });
+            final Call<Integer> callUser = apiUser.getFollowersCount(userId);
+            callUser.enqueue(new Callback<Integer>() {
+                @Override
+                public void onResponse(Call<Integer> call, Response<Integer> response) {
+                    if (response.body() == null) {
+                        userFollowers.setText("You don't have any followers");
+                    } else {
+                        userFollowers.setText(response.body() + " Followers");
+                    }
+                }
 
-            @Override
-            public void onFailure(Call<Integer> call, Throwable t) {
+                @Override
+                public void onFailure(Call<Integer> call, Throwable t) {
 
-            }
-        });
+                }
+            });
+            trickList = (ListView) findViewById(R.id.trickInProgressList);
+            ITricksAPI apiTrick = Repository.getInstance().retrofit.create(ITricksAPI.class);
+            Call<List<TrickForUser>> trickCall = apiTrick.getInProgress(Integer.parseInt(user.get(SessionManager.KEY_ID)));
 
-        trickList = (ListView) findViewById(R.id.trickInProgressList);
-        ITricksAPI apiTrick = Repository.getInstance().retrofit.create(ITricksAPI.class);
-        Call<List<TrickForUser>> trickCall = apiTrick.getInProgress(Integer.parseInt(user.get(SessionManager.KEY_ID)));
+            trickCall.enqueue(new Callback<List<TrickForUser>>() {
+                @Override
+                public void onResponse(Call<List<TrickForUser>> call, Response<List<TrickForUser>> response) {
+                    tricks = response.body();
+                    TricksInProgressAdapter adapter = new TricksInProgressAdapter();
+                    trickList.setAdapter(adapter);
+                }
 
-        trickCall.enqueue(new Callback<List<TrickForUser>>() {
-            @Override
-            public void onResponse(Call<List<TrickForUser>> call, Response<List<TrickForUser>> response) {
-                tricks = response.body();
-                TricksInProgressAdapter adapter = new TricksInProgressAdapter();
-                trickList.setAdapter(adapter);
-            }
+                @Override
+                public void onFailure(Call<List<TrickForUser>> call, Throwable t) {
 
-            @Override
-            public void onFailure(Call<List<TrickForUser>> call, Throwable t) {
+                }
+            });
 
-            }
-        });
+            trickList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Log.d("My Profile", "row selected " + position);
+                    TrickForUser trick = tricks.get(position);
+                    Intent intent = new Intent(getApplicationContext(), Progress.class);
+                    intent.putExtra("trickId", trick.getTrickId().toString());
+                    //intent.putExtra("trickName", trick.getTrickName());
+                    //startActivity(intent);
+                    startActivityForResult(intent, UPDATE_PROGRESS);
+                }
+            });
 
-       // tricks = TrickDB.getInstance().getAllTricks();
-        //spinner.setVisibility(View.VISIBLE);
-
-        //spinner.setVisibility(View.GONE);
-
-        trickList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("My Profile", "row selected " + position);
-                TrickForUser trick = tricks.get(position);
-                Intent intent = new Intent(getApplicationContext(), Progress.class);
-                intent.putExtra("trickId", trick.getTrickId().toString());
-                //intent.putExtra("trickName", trick.getTrickName());
-                //startActivity(intent);
-                startActivityForResult(intent, UPDATE_PROGRESS);
-            }
-        });
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setImageResource(R.drawable.logo_transparent);
+        }
 
         SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
         ImageView itemIcon1 = new ImageView(this);
@@ -266,10 +338,37 @@ public class MyProfile extends AppCompatActivity {
                 session.logoutUser();
                 return true;
             }
+            case R.id.myProfile: {
+                Intent intent = new Intent(getApplicationContext(), MyProfile.class);
+                startActivity(intent);
+            }
             default:
                 //return super.onOptionsItemSelected(item);
                 return true;
         }
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        MenuItem myProfile = menu.findItem(R.id.myProfile);
+        MenuItem logout = menu.findItem(R.id.logoutBtn);
+        MenuItem edit = menu.findItem(R.id.editBtn);
+
+        if (flag==1) {
+           // myProfile.setEnabled(true);
+            myProfile.setVisible(true);
+            logout.setVisible(false);
+            edit.setVisible(false);
+        } else {
+            // disabled
+            myProfile.setVisible(false);
+            //myProfile.setEnabled(false);
+            logout.setEnabled(true);
+            edit.setEnabled(true);
+//            item.getIcon().setAlpha(130);
+        }
+        return true;
     }
 
     @Override

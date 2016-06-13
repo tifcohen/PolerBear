@@ -32,4 +32,10 @@ public interface IUserAPI {
 
     @GET("/getUserProfilePicName")
     Call<String> getUserProfilePicName(@Query("userId") String userId);
+
+    @GET("/getUser")
+    Call<User> getUser(@Query("userId") int userId);
+
+    @GET("/addToFollowingList")
+    Call<Void> addToFollowingList(@Query("user") int userId, @Query("otherUserId") int otherUserId);
 }

@@ -1,25 +1,43 @@
 package com.example.tiferet.polerbear.Activities;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.MediaController;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.VideoView;
 
-import com.example.tiferet.polerbear.Fragments.GlobalNewsfeedFragment;
-import com.example.tiferet.polerbear.Fragments.PersonalNewsfeedFragment;
+import com.example.tiferet.polerbear.API.ITricksAPI;
+import com.example.tiferet.polerbear.API.IUploadFiles;
 import com.example.tiferet.polerbear.R;
-import com.example.tiferet.polerbear.Repository.Server.User;
+import com.example.tiferet.polerbear.Repository.Server.Repository;
+import com.example.tiferet.polerbear.Repository.Server.Trick;
+import com.example.tiferet.polerbear.Repository.Server.TrickForUser;
 
-public class Newsfeed extends AppCompatActivity implements GlobalNewsfeedFragment.GlobalNewsfeedFragmentDelegate, PersonalNewsfeedFragment.PersonalNewsfeedFragmentDelegate{
+import java.util.List;
 
-    String current;
-    GlobalNewsfeedFragment globalNewsfeedFragment;
-    PersonalNewsfeedFragment personalNewsfeedFragment;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class Newsfeed extends AppCompatActivity{
+
+    List<TrickForUser> trickForUsers;
+    ProgressBar spinner;
+    ListView usersList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,63 +46,143 @@ public class Newsfeed extends AppCompatActivity implements GlobalNewsfeedFragmen
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        current = "personal";
-        personalNewsfeedFragment = new PersonalNewsfeedFragment();
-        personalNewsfeedFragment.setDelegate(this);
-        //stack.push(myProfileFragment);
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.add(R.id.newsfeedContainer, personalNewsfeedFragment);
-        ft.commit();
-        invalidateOptionsMenu();
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                Toast.makeText(getApplicationContext(), "Global", Toast.LENGTH_SHORT).show();
                 Log.d("TAG", "fab pressed");
-                if (current.equals("personal")) {
-                    OnGlobalNewsfeed();
-                } else {
-                    OnPersonalNewsfeed();
-                }
+            }
+        });
+        usersList = (ListView) findViewById(R.id.newsFeedList);
+        spinner = (ProgressBar) findViewById(R.id.spinner);
+
+        spinner.setVisibility(View.VISIBLE);
+
+        ITricksAPI apiTrick = Repository.getInstance().retrofit.create(ITricksAPI.class);
+        Call<List<TrickForUser>> trickCall = apiTrick.getAllTricksForUsers();
+
+        trickCall.enqueue(new Callback<List<TrickForUser>>() {
+            @Override
+            public void onResponse(Call<List<TrickForUser>> call, Response<List<TrickForUser>> response) {
+                trickForUsers = response.body();
+                NewsfeedAdapter adapter = new NewsfeedAdapter();
+                usersList.setAdapter(adapter);
+                spinner.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFailure(Call<List<TrickForUser>> call, Throwable t) {
+
             }
         });
     }
 
-    @Override
-    public void OnPersonalNewsfeed() {
-        current = "personal";
-        //personalNewsfeedFragment.setDelegate(this);
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.add(R.id.newsfeedContainer, personalNewsfeedFragment);
-        ft.hide(globalNewsfeedFragment);
-        ft.commit();
-        invalidateOptionsMenu();
-    }
-
-
-    @Override
-    public void OnGlobalNewsfeed() {
-        current = "global";
-        globalNewsfeedFragment = new GlobalNewsfeedFragment();
-        globalNewsfeedFragment.setDelegate(this);
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.add(R.id.newsfeedContainer, globalNewsfeedFragment);
-        ft.hide(personalNewsfeedFragment);
-        ft.commit();
-        invalidateOptionsMenu();
-    }
-
     public void onClickUsername(View v) {
-        User user = (User) v.getTag();
+        TrickForUser user = (TrickForUser) v.getTag();
         Intent intent = new Intent(getApplicationContext(), MyProfile.class);
-        intent.putExtra("fragment", "user");
-        intent.putExtra("userId", "40");
+        intent.putExtra("ref", user.getUserId().toString());
         startActivity(intent);
     }
 
+    class NewsfeedAdapter extends BaseAdapter {
+
+        public NewsfeedAdapter() {
+        }
+
+        @Override
+        public int getCount() { //returns the size of the list
+            return trickForUsers.size();
+        }
+
+        @Override
+        public Object getItem(int position) { //returns the post
+            return trickForUsers.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) { //returns post id
+            return position;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                LayoutInflater inflater = getLayoutInflater();
+                convertView = inflater.inflate(R.layout.global_newsfeed_single_row, null);
+            }
+            final TextView userName = (TextView) convertView.findViewById(R.id.otherUsername);
+            final TextView trickName = (TextView) convertView.findViewById(R.id.trickname);
+            final TextView trickLevel = (TextView) convertView.findViewById(R.id.level);
+            final Button teachMe = (Button) convertView.findViewById(R.id.teachMeBtn);
+            final ProgressBar videoSpinner = (ProgressBar) convertView.findViewById(R.id.videoSpinner);
+            final VideoView videoview = (VideoView) convertView.findViewById(R.id.trickVideo);
+            /*final TextView action2 = (TextView) convertView.findViewById(R.id.action2TextView);
+            final ImageView userProfileImage = (ImageView) convertView.findViewById(R.id.userProfileImage);*/
+
+            TrickForUser trickForUser = trickForUsers.get(position);
+            userName.setText(trickForUser.getUserName());
+            trickName.setText(trickForUser.getTrickName());
+            videoSpinner.setVisibility(View.VISIBLE);
+
+            userName.setTag(trickForUser);
+
+            ITricksAPI trickAPI = Repository.getInstance().retrofit.create(ITricksAPI.class);
+            Call<Trick> callLevel = trickAPI.getTrick(trickForUser.getTrickId());
+            callLevel.enqueue(new Callback<Trick>() {
+                @Override
+                public void onResponse(Call<Trick> call, Response<Trick> response) {
+                    Trick trick = response.body();
+                    trickLevel.setText("Level: "+trick.getTrickLevel().toString());
+                }
+
+                @Override
+                public void onFailure(Call<Trick> call, Throwable t) {
+
+                }
+            });
+
+            final IUploadFiles api = Repository.getInstance().retrofit.create(IUploadFiles.class);
+            final Call<String> callVideo = api.getFile(trickForUser.getTrickPic());
+            callVideo.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    final String VideoURL = response.body();
+                    if(VideoURL==null){
+                        videoview.setVisibility(View.GONE);
+                    }
+                    try {
+                        videoSpinner.setVisibility(View.GONE);
+                        // Start the MediaController
+                        MediaController mediacontroller = new MediaController(Newsfeed.this);
+                        mediacontroller.setAnchorView(videoview);
+                        // Get the URL from String VideoURL
+                        Uri video = Uri.parse(VideoURL);
+                        videoview.setMediaController(mediacontroller);
+                        videoview.setVideoURI(video);
+
+                    } catch (Exception e) {
+                        Log.e("Error", e.getMessage());
+                        e.printStackTrace();
+                    }
+
+                    videoview.requestFocus();
+                    videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                        // Close the progress bar and play the video
+                        public void onPrepared(MediaPlayer mp) {
+                            //Glide.with(getActivity().getApplicationContext()).load(Uri.fromFile(new File(VideoURL))).into(thumbnail);//TODO
+                            videoview.pause();
+                        }
+                    });
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    Log.d("show video", t.getMessage());
+                }
+            });
+
+            return convertView;
+        }
+    }
 }

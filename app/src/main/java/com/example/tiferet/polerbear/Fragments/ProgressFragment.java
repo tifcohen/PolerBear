@@ -108,9 +108,6 @@ public class ProgressFragment extends Fragment {
             }
         });
         Log.d("TAG", trickId);
-        //TextView trickName = (TextView) view.findViewById(R.id.trickName);
-        //trickName.setText(thisTrick.getTrickName());
-
         return view;
     }
 
@@ -152,43 +149,49 @@ public class ProgressFragment extends Fragment {
             comment.setText(trick.getComment());
             spinner.setVisibility(View.VISIBLE);
 
-            final IUploadFiles api = Repository.getInstance().retrofit.create(IUploadFiles.class);
-            final Call<String> callVideo = api.getFile(trick.getTrickPic());
-            callVideo.enqueue(new Callback<String>() {
-                @Override
-                public void onResponse(Call<String> call, Response<String> response) {
-                    final String VideoURL = response.body();
+            if(trick.getTrickPic()==null){
+                videoview.setVisibility(View.GONE);
+            }
+            else {
 
-                    try {
-                        spinner.setVisibility(View.GONE);
-                        // Start the MediaController
-                        MediaController mediacontroller = new MediaController(getActivity());
-                        mediacontroller.setAnchorView(videoview);
-                        // Get the URL from String VideoURL
-                        Uri video = Uri.parse(VideoURL);
-                        videoview.setMediaController(mediacontroller);
-                        videoview.setVideoURI(video);
+                final IUploadFiles api = Repository.getInstance().retrofit.create(IUploadFiles.class);
+                final Call<String> callVideo = api.getFile(trick.getTrickPic());
+                callVideo.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        final String VideoURL = response.body();
 
-                    } catch (Exception e) {
-                        Log.e("Error", e.getMessage());
-                        e.printStackTrace();
+                        try {
+                            spinner.setVisibility(View.GONE);
+                            // Start the MediaController
+                            MediaController mediacontroller = new MediaController(getActivity());
+                            mediacontroller.setAnchorView(videoview);
+                            // Get the URL from String VideoURL
+                            Uri video = Uri.parse(VideoURL);
+                            videoview.setMediaController(mediacontroller);
+                            videoview.setVideoURI(video);
+
+                        } catch (Exception e) {
+                            Log.e("Error", e.getMessage());
+                            e.printStackTrace();
+                        }
+
+                        videoview.requestFocus();
+                        videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                            // Close the progress bar and play the video
+                            public void onPrepared(MediaPlayer mp) {
+                                //Glide.with(getActivity().getApplicationContext()).load(Uri.fromFile(new File(VideoURL))).into(thumbnail);//TODO
+                                videoview.pause();
+                            }
+                        });
                     }
 
-                    videoview.requestFocus();
-                    videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                        // Close the progress bar and play the video
-                        public void onPrepared(MediaPlayer mp) {
-                            //Glide.with(getActivity().getApplicationContext()).load(Uri.fromFile(new File(VideoURL))).into(thumbnail);//TODO
-                            videoview.pause();
-                        }
-                    });
-                }
-
-                @Override
-                public void onFailure(Call<String> call, Throwable t) {
-                    Log.d("show video", t.getMessage());
-                }
-            });
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        Log.d("show video", t.getMessage());
+                    }
+                });
+            }
 
             return convertView;
         }

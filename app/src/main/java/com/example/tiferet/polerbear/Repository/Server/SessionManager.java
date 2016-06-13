@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.example.tiferet.polerbear.Activities.Login;
+import com.example.tiferet.polerbear.Activities.MyProfile;
 
 import java.util.HashMap;
 
@@ -100,9 +101,9 @@ public class SessionManager {
 
     public void checkLogin(){
         // Check login status
-        if(!this.isLoggedIn()){
+        if(this.isLoggedIn()){
             // user is not logged in redirect him to Login Activity
-            Intent i = new Intent(_context, Login.class);
+            Intent i = new Intent(_context, MyProfile.class);
             // Closing all the Activities
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
