@@ -38,4 +38,11 @@ public interface IUserAPI {
 
     @GET("/addToFollowingList")
     Call<Void> addToFollowingList(@Query("user") int userId, @Query("otherUserId") int otherUserId);
+
+    @GET("/isFollowingList")
+    Call<Boolean> isFollowingList(@Query("user") int userId, @Query("otherUserId") int otherUserId);
+
+    @GET("/removeFollowingList")
+    Call<Void> removeFollowingList(@Query("user") int userId, @Query("otherUserId") int otherUserId);
+
 }

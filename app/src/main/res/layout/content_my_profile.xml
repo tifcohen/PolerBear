@@ -9,6 +9,13 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_my_profile"
     tools:context="com.example.tiferet.polerbear.Activities.MyProfile">
+    <Button
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Follow"
+        android:id="@+id/followBtn"/>
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

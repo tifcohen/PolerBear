@@ -18,9 +18,11 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.tiferet.polerbear.API.ITricksAPI;
 import com.example.tiferet.polerbear.API.IUploadFiles;
@@ -66,6 +68,9 @@ public class MyProfile extends AppCompatActivity {
         final TextView username = (TextView) findViewById(R.id.myProfileUsername);
         final TextView userLevel = (TextView) findViewById(R.id.myProfileLevelView);
         final TextView userFollowers = (TextView) findViewById(R.id.myProfileFollowers);
+        trickList = (ListView) findViewById(R.id.trickInProgressList);
+        final Button followBtn = (Button) findViewById(R.id.followBtn);
+        followBtn.setVisibility(View.GONE);
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(R.drawable.logo_transparent);
@@ -74,6 +79,7 @@ public class MyProfile extends AppCompatActivity {
         if(ref!=null) {
             if (!ref.equals(user.get(SessionManager.KEY_ID))) {
                 flag =1;
+                followBtn.setVisibility(View.VISIBLE);
                 IUserAPI otherApi = Repository.getInstance().retrofit.create(IUserAPI.class);
                 Call<User> callOther = otherApi.getUser(Integer.parseInt(ref));
                 callOther.enqueue(new Callback<User>() {
@@ -86,8 +92,51 @@ public class MyProfile extends AppCompatActivity {
                         Log.d("profile", "other's profile! " + other.getUserId());
 
                         final IUserAPI apiUser = Repository.getInstance().retrofit.create(IUserAPI.class);
-                        int userId = Integer.parseInt(ref);
+                        Call<Boolean> followCall = apiUser.isFollowingList((Integer.parseInt(SessionManager.KEY_ID)),other.getUserId());
+                        followCall.enqueue(new Callback<Boolean>() {
+                            @Override
+                            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                                if(response.body()){
+                                    followBtn.setText("Unfollow");
+                                    followBtn.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            Call<Void> unfollow = apiUser.removeFollowingList((Integer.parseInt(SessionManager.KEY_ID)),other.getUserId());
+                                            unfollow.enqueue(new Callback<Void>() {
+                                                @Override
+                                                public void onResponse(Call<Void> call, Response<Void> response) {
+                                                    followBtn.setText("Follow");
+                                                    Toast.makeText(getApplicationContext(),"Unfollow "+other.getUserName(),Toast.LENGTH_SHORT).show();
+                                                }
 
+                                                @Override
+                                                public void onFailure(Call<Void> call, Throwable t) {
+
+                                                }
+                                            });
+                                            Call<Void> follow = apiUser.addToFollowingList((Integer.parseInt(SessionManager.KEY_ID)), other.getUserId());
+                                            follow.enqueue(new Callback<Void>() {
+                                                @Override
+                                                public void onResponse(Call<Void> call, Response<Void> response) {
+                                                    followBtn.setText("Unfollow");
+                                                    Toast.makeText(getApplicationContext(), "Following " + other.getUserName(), Toast.LENGTH_SHORT).show();
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<Void> call, Throwable t) {
+
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Boolean> call, Throwable t) {
+
+                            }
+                        });
                         Call<String> picRefCall = apiUser.getUserProfilePicName(other.getUserId().toString());
                         picRefCall.enqueue(new Callback<String>() {
                             @Override
@@ -120,7 +169,26 @@ public class MyProfile extends AppCompatActivity {
                                 Log.d("Profile Pic ref", t.getMessage());
                             }
                         });
-                        final Call<Integer> callUser = apiUser.getFollowersCount(userId);
+                        final ITricksAPI api = Repository.getInstance().retrofit.create(ITricksAPI.class);
+                        final Call<List<TrickForUser>> callTrickForUser = api.getTricksForUser(other.getUserId());
+
+                        callTrickForUser.enqueue(new Callback<List<TrickForUser>>() {
+                            @Override
+                            public void onResponse(Call<List<TrickForUser>> call, Response<List<TrickForUser>> response) {
+/*
+                                tricks = response.body();
+                                TricksInProgressAdapter adapter = new TricksInProgressAdapter();
+                                trickList.setAdapter(adapter);
+                                //spinner.setVisibility(View.GONE);*/
+                            }
+
+                            @Override
+                            public void onFailure(Call<List<TrickForUser>> call, Throwable t) {
+                                Log.d("TAG", "failed to fetch tricks");
+                            }
+                        });
+                        trickList = (ListView) findViewById(R.id.galleryList);
+                        final Call<Integer> callUser = apiUser.getFollowersCount(other.getUserId());
                         callUser.enqueue(new Callback<Integer>() {
                             @Override
                             public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -151,7 +219,7 @@ public class MyProfile extends AppCompatActivity {
 
             //session.logoutUser();
             final IUserAPI apiUser = Repository.getInstance().retrofit.create(IUserAPI.class);
-            int userId = Integer.parseInt(user.get(SessionManager.KEY_ID));
+            //int userId = Integer.parseInt(user.get(SessionManager.KEY_ID));
             /*if (user.get(SessionManager.KEY_ID).equals(null)){
                 userId=0;
 
@@ -187,7 +255,7 @@ public class MyProfile extends AppCompatActivity {
                     Log.d("Profile Pic ref", t.getMessage());
                 }
             });
-            final Call<Integer> callUser = apiUser.getFollowersCount(userId);
+            final Call<Integer> callUser = apiUser.getFollowersCount(Integer.parseInt(user.get(SessionManager.KEY_ID)));
             callUser.enqueue(new Callback<Integer>() {
                 @Override
                 public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -203,7 +271,6 @@ public class MyProfile extends AppCompatActivity {
 
                 }
             });
-            trickList = (ListView) findViewById(R.id.trickInProgressList);
             ITricksAPI apiTrick = Repository.getInstance().retrofit.create(ITricksAPI.class);
             Call<List<TrickForUser>> trickCall = apiTrick.getInProgress(Integer.parseInt(user.get(SessionManager.KEY_ID)));
 

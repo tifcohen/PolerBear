@@ -101,7 +101,7 @@ public class NewTrick extends AppCompatActivity {
                             call.enqueue(new Callback<Void>() {
                                 @Override
                                 public void onResponse(Call<Void> call, Response<Void> response) {
-                                    Toast.makeText(getApplicationContext(),"Successfully added to your tricks list!", Toast.LENGTH_SHORT).show();;
+                                    Toast.makeText(getApplicationContext(), "Successfully added to your tricks list!", Toast.LENGTH_SHORT).show();;
                                     Intent intent = new Intent(getApplicationContext(),MyProfile.class);
                                     intent.putExtra("ref", "");
                                     startActivity(intent);
