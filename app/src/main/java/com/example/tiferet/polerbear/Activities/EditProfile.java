@@ -26,7 +26,6 @@ import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -58,8 +57,6 @@ public class EditProfile extends AppCompatActivity {
         actionBar.setHomeButtonEnabled(true);
 
         session = new SessionManager(getApplicationContext());
-        session.checkLogin();
-        final HashMap<String, String> user = session.getUserDetails();
 
         final DateEditText date = (DateEditText) findViewById(R.id.editUserBirthDate);
         profilePic = (ImageView) findViewById(R.id.editProfileImage);
@@ -68,14 +65,14 @@ public class EditProfile extends AppCompatActivity {
         final ArrayAdapter<String> sexAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.dropdown_item_selected, sexPickerDropdown);
         sexAdapter.setDropDownViewResource(R.layout.dropdown_items);
         sexDropdown.setAdapter(sexAdapter);
-        String compareValue = user.get(SessionManager.KEY_SEX);
+        String compareValue = session.getSex();
         if (!compareValue.equals(null)) {
             int spinnerPosition = sexAdapter.getPosition(compareValue);
             sexDropdown.setSelection(spinnerPosition);
         }
 
         IUserAPI apiUser = Repository.getInstance().retrofit.create(IUserAPI.class);
-        Call<String> picRefCall = apiUser.getUserProfilePicName(user.get(SessionManager.KEY_ID));
+        Call<String> picRefCall = apiUser.getUserProfilePicName(session.getUserId().toString());
         picRefCall.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -85,7 +82,7 @@ public class EditProfile extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
                         if(response.body()==null){
-                            if(user.get(SessionManager.KEY_SEX).equals("Female")){
+                            if(session.getSex().equals("Female")) {
                                 profilePic.setImageDrawable(getResources().getDrawable(R.drawable.female));
                             }else{
                                 profilePic.setImageDrawable(getResources().getDrawable(R.drawable.male));
@@ -108,7 +105,7 @@ public class EditProfile extends AppCompatActivity {
         });
 
 
-        date.setText(user.get(SessionManager.KEY_BIRTHDATE));
+        date.setText(session.getBrithdate());
 
         profilePic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,7 +124,7 @@ public class EditProfile extends AppCompatActivity {
             public void onClick(View v) {
                 final IUserAPI userAPI = Repository.getInstance().retrofit.create(IUserAPI.class);
                 final User updatedUser = new User();
-                updatedUser.setUserId(Integer.parseInt(user.get(SessionManager.KEY_ID)));
+                updatedUser.setUserId(session.getUserId());
                 updatedUser.setUserSex(sexDropdown.getSelectedItem().toString());
                 updatedUser.setUserBirthDate(date.getText().toString());
 
@@ -147,7 +144,7 @@ public class EditProfile extends AppCompatActivity {
                 });
                 if (bitmap!=null && flag==1){
                     File file = persistImage(bitmap, "name");
-                    updateImageToServer(file, user);
+                    updateImageToServer(file, session.getUserId());
                 }
             }
         });
@@ -162,7 +159,7 @@ public class EditProfile extends AppCompatActivity {
         });
     }
 
-    private void updateImageToServer(File file, HashMap<String, String> user) {
+    private void updateImageToServer(File file, Integer userId) {
         // create upload service client
         final IUploadFiles service = Repository.getInstance().retrofit.create(IUploadFiles.class);
 
@@ -181,7 +178,7 @@ public class EditProfile extends AppCompatActivity {
                         MediaType.parse("multipart/form-data"), descriptionString);
 
         // finally, execute the request
-        Call<ResponseBody> call = service.addProfilePic(user.get(SessionManager.KEY_ID), description, body);
+        Call<ResponseBody> call = service.addProfilePic(userId.toString(), description, body);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call,

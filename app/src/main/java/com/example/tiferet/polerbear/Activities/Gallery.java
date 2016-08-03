@@ -21,7 +21,6 @@ import com.example.tiferet.polerbear.Repository.Server.Repository;
 import com.example.tiferet.polerbear.Repository.Server.SessionManager;
 import com.example.tiferet.polerbear.Repository.Server.TrickForUser;
 
-import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -50,10 +49,9 @@ public class Gallery extends AppCompatActivity {
         spinner.setVisibility(View.VISIBLE);
 
         session = new SessionManager(getApplicationContext());
-        HashMap<String, String> user = session.getUserDetails();
 
         final ITricksAPI api = Repository.getInstance().retrofit.create(ITricksAPI.class);
-        final Call<List<TrickForUser>> callTrickForUser = api.getTricksForUser(Integer.parseInt(user.get(SessionManager.KEY_ID)));
+        final Call<List<TrickForUser>> callTrickForUser = api.getTricksForUser(session.getUserId());
 
         callTrickForUser.enqueue(new Callback<List<TrickForUser>>() {
             @Override

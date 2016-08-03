@@ -27,7 +27,6 @@ import com.example.tiferet.polerbear.Repository.Server.Repository;
 import com.example.tiferet.polerbear.Repository.Server.SessionManager;
 import com.example.tiferet.polerbear.Repository.Server.TrickForUser;
 
-import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -65,12 +64,11 @@ public class PersonalNewsfeedFragment extends Fragment {
         spinner = (ProgressBar) view.findViewById(R.id.spinner);
         final TextView message = (TextView) view.findViewById(R.id.message);
         session = new SessionManager(getActivity().getApplicationContext());
-        final HashMap<String, String> user = session.getUserDetails();
 
         Toast.makeText(getActivity().getApplicationContext(),"Personal", Toast.LENGTH_LONG).show();
         message.setVisibility(View.GONE);
         ITricksAPI apiTrick = Repository.getInstance().retrofit.create(ITricksAPI.class);
-        Call<List<TrickForUser>> trickCall = apiTrick.getAllTricksForFollowingUsers(Integer.parseInt(user.get(SessionManager.KEY_ID))); //TODO: String or int?
+        Call<List<TrickForUser>> trickCall = apiTrick.getAllTricksForFollowingUsers(session.getUserId()); //TODO: String or int?
 
         trickCall.enqueue(new Callback<List<TrickForUser>>() {
             @Override

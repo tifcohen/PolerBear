@@ -15,8 +15,6 @@ import com.example.tiferet.polerbear.Fragments.UpdateProgressFragment;
 import com.example.tiferet.polerbear.R;
 import com.example.tiferet.polerbear.Repository.Server.SessionManager;
 
-import java.util.HashMap;
-
 public class Progress extends AppCompatActivity implements ProgressFragment.ProgressFragmentDelegate, UpdateProgressFragment.UpdateProgressFragmentDelegate {
 
     ProgressFragment progressFragment;
@@ -33,7 +31,6 @@ public class Progress extends AppCompatActivity implements ProgressFragment.Prog
         setSupportActionBar(toolbar);
 
         session = new SessionManager(getApplicationContext());
-        final HashMap<String, String> user = session.getUserDetails();
 
         Intent intent = getIntent();
         final String trickId = intent.getStringExtra("trickId");
@@ -44,7 +41,7 @@ public class Progress extends AppCompatActivity implements ProgressFragment.Prog
             @Override
             public void onClick(View view) {
                 fab.setVisibility(View.GONE);
-                OnUpdateProgress(user.get(SessionManager.KEY_ID), trickId);
+                OnUpdateProgress(session.getUserId().toString(), trickId);
             }
         });
 

@@ -35,7 +35,6 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -93,7 +92,6 @@ public class UpdateProgressFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_update_progress, container, false);
 
         session = new SessionManager(getActivity().getApplicationContext());
-        final HashMap<String, String> user = session.getUserDetails();
 
         final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         Button saveBtn = (Button) view.findViewById(R.id.saveBtn);
@@ -146,7 +144,7 @@ public class UpdateProgressFragment extends Fragment {
                 progressBar.setVisibility(View.VISIBLE);
                 TrickForUser updatedProgress = new TrickForUser();
                 updatedProgress.setUserId(Integer.parseInt(userId));
-                updatedProgress.setUserName(user.get(SessionManager.KEY_NAME));
+                updatedProgress.setUserName(session.getName());
                 updatedProgress.setTrickId(Integer.parseInt(trickId));
                 updatedProgress.setTrickName(trickName.getText().toString());
                 updatedProgress.setDate(progressDate.getText().toString());

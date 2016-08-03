@@ -131,7 +131,7 @@ public class SignUp3Fragment extends Fragment {
                     @Override
                     public void onResponse(Call<Integer> call, Response<Integer> response) {
                         user.setUserLevel(response.body());
-                        session.updateLevelSession(response.body()+"");
+                        session.updateLevelSession(Integer.parseInt(response.body()+""));
                         if (delegate != null) {
                             delegate.OnSignUp4(user);
                         }

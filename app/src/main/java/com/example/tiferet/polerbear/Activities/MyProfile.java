@@ -36,7 +36,6 @@ import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
-import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -63,7 +62,6 @@ public class MyProfile extends AppCompatActivity {
 
         session = new SessionManager(getApplicationContext());
         //session.checkLogin();
-        final HashMap<String, String> user = session.getUserDetails();
         profilePic = (ImageView) findViewById(R.id.myProfilePicture);
         final TextView username = (TextView) findViewById(R.id.myProfileUsername);
         final TextView userLevel = (TextView) findViewById(R.id.myProfileLevelView);
@@ -77,7 +75,7 @@ public class MyProfile extends AppCompatActivity {
 
         final String ref = getIntent().getStringExtra("ref");
         if(ref!=null) {
-            if (!ref.equals(user.get(SessionManager.KEY_ID))) {
+            if (!ref.equals(session.getUserId().toString())) {
                 flag =1;
                 followBtn.setVisibility(View.VISIBLE);
                 IUserAPI otherApi = Repository.getInstance().retrofit.create(IUserAPI.class);
@@ -92,7 +90,7 @@ public class MyProfile extends AppCompatActivity {
                         Log.d("profile", "other's profile! " + other.getUserId());
 
                         final IUserAPI apiUser = Repository.getInstance().retrofit.create(IUserAPI.class);
-                        Call<Boolean> followCall = apiUser.isFollowingList((Integer.parseInt(SessionManager.KEY_ID)),other.getUserId());
+                        Call<Boolean> followCall = apiUser.isFollowingList(session.getUserId(),other.getUserId());
                         followCall.enqueue(new Callback<Boolean>() {
                             @Override
                             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
@@ -101,7 +99,7 @@ public class MyProfile extends AppCompatActivity {
                                     followBtn.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            Call<Void> unfollow = apiUser.removeFollowingList((Integer.parseInt(SessionManager.KEY_ID)),other.getUserId());
+                                            Call<Void> unfollow = apiUser.removeFollowingList(session.getUserId(),other.getUserId());
                                             unfollow.enqueue(new Callback<Void>() {
                                                 @Override
                                                 public void onResponse(Call<Void> call, Response<Void> response) {
@@ -114,7 +112,7 @@ public class MyProfile extends AppCompatActivity {
 
                                                 }
                                             });
-                                            Call<Void> follow = apiUser.addToFollowingList((Integer.parseInt(SessionManager.KEY_ID)), other.getUserId());
+                                            Call<Void> follow = apiUser.addToFollowingList(session.getUserId(), other.getUserId());
                                             follow.enqueue(new Callback<Void>() {
                                                 @Override
                                                 public void onResponse(Call<Void> call, Response<Void> response) {
@@ -214,8 +212,8 @@ public class MyProfile extends AppCompatActivity {
             }
         }
         else {
-            username.setText(user.get(SessionManager.KEY_NAME));
-            userLevel.setText("Level: " + user.get(SessionManager.KEY_LEVEL));
+            username.setText(session.getName());
+            userLevel.setText("Level: " + session.getLevel());
 
             //session.logoutUser();
             final IUserAPI apiUser = Repository.getInstance().retrofit.create(IUserAPI.class);
@@ -224,7 +222,7 @@ public class MyProfile extends AppCompatActivity {
                 userId=0;
 
             }*/
-            Call<String> picRefCall = apiUser.getUserProfilePicName(user.get(SessionManager.KEY_ID));
+            Call<String> picRefCall = apiUser.getUserProfilePicName(session.getUserId().toString());
             picRefCall.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
@@ -234,7 +232,7 @@ public class MyProfile extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<String> call, Response<String> response) {
                             if(response.body()==null){
-                                if(user.get(SessionManager.KEY_SEX).equals("Female")){
+                                if(session.getSex().equals("Female")){
                                     profilePic.setImageDrawable(getResources().getDrawable(R.drawable.female));
                                 }else{
                                     profilePic.setImageDrawable(getResources().getDrawable(R.drawable.male));
@@ -255,7 +253,7 @@ public class MyProfile extends AppCompatActivity {
                     Log.d("Profile Pic ref", t.getMessage());
                 }
             });
-            final Call<Integer> callUser = apiUser.getFollowersCount(Integer.parseInt(user.get(SessionManager.KEY_ID)));
+            final Call<Integer> callUser = apiUser.getFollowersCount(session.getUserId());
             callUser.enqueue(new Callback<Integer>() {
                 @Override
                 public void onResponse(Call<Integer> call, Response<Integer> response) {
@@ -272,7 +270,7 @@ public class MyProfile extends AppCompatActivity {
                 }
             });
             ITricksAPI apiTrick = Repository.getInstance().retrofit.create(ITricksAPI.class);
-            Call<List<TrickForUser>> trickCall = apiTrick.getInProgress(Integer.parseInt(user.get(SessionManager.KEY_ID)));
+            Call<List<TrickForUser>> trickCall = apiTrick.getInProgress(session.getUserId());
 
             trickCall.enqueue(new Callback<List<TrickForUser>>() {
                 @Override
@@ -441,10 +439,9 @@ public class MyProfile extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        final HashMap<String, String> user = session.getUserDetails();
         if (requestCode == UPDATE_PROGRESS) {
             ITricksAPI apiTrick = Repository.getInstance().retrofit.create(ITricksAPI.class);
-            Call<List<TrickForUser>> trickCall = apiTrick.getInProgress(Integer.parseInt(user.get(SessionManager.KEY_ID)));
+            Call<List<TrickForUser>> trickCall = apiTrick.getInProgress(session.getUserId());
 
             trickCall.enqueue(new Callback<List<TrickForUser>>() {
                 @Override
@@ -463,7 +460,7 @@ public class MyProfile extends AppCompatActivity {
 
         if (requestCode == EDIT_PROFILE) {
             IUserAPI apiUser = Repository.getInstance().retrofit.create(IUserAPI.class);
-            Call<String> picRefCall = apiUser.getUserProfilePicName(user.get(SessionManager.KEY_ID));
+            Call<String> picRefCall = apiUser.getUserProfilePicName(session.getUserId().toString());
             picRefCall.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
@@ -473,7 +470,7 @@ public class MyProfile extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<String> call, Response<String> response) {
                             if(response.body()==null){
-                                if(user.get(SessionManager.KEY_SEX).equals("Female")){
+                                if(session.getSex().equals("Female")){
                                     profilePic.setImageDrawable(getResources().getDrawable(R.drawable.female));
                                 }else{
                                     profilePic.setImageDrawable(getResources().getDrawable(R.drawable.male));

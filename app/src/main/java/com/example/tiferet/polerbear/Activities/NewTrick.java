@@ -26,7 +26,6 @@ import com.example.tiferet.polerbear.Repository.Server.TrickForUser;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -50,8 +49,6 @@ public class NewTrick extends AppCompatActivity {
 
         final String VideoURL;
         session = new SessionManager(getApplicationContext());
-        session.checkLogin();
-        final HashMap<String, String> user = session.getUserDetails();
 
         final TextView trickLevel = (TextView) findViewById(R.id.trickLevel);
         final TextView trickName = (TextView) findViewById(R.id.trickName);
@@ -74,7 +71,7 @@ public class NewTrick extends AppCompatActivity {
         }
         else if(ref.equals("Do it!")){
             ITricksAPI apiTrick = Repository.getInstance().retrofit.create(ITricksAPI.class);
-            Call<Trick> trickCall = apiTrick.generateTrick(Integer.parseInt(user.get(SessionManager.KEY_ID)));
+            Call<Trick> trickCall = apiTrick.generateTrick(session.getUserId());
             trickCall.enqueue(new Callback<Trick>() {
                 @Override
                 public void onResponse(Call<Trick> call, Response<Trick> response) {
@@ -89,8 +86,8 @@ public class NewTrick extends AppCompatActivity {
                             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                             Date date = new Date();
                             TrickForUser trickForUser = new TrickForUser();
-                            trickForUser.setUserId(Integer.parseInt(user.get(SessionManager.KEY_ID)));
-                            trickForUser.setUserName(user.get(SessionManager.KEY_NAME));
+                            trickForUser.setUserId(session.getUserId());
+                            trickForUser.setUserName(session.getName());
                             trickForUser.setComment("Just started...");
                             trickForUser.setTrickId(trick.getTrickId());
                             trickForUser.setIsFinished(0);

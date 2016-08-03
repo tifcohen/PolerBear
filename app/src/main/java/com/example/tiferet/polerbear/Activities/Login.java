@@ -41,7 +41,7 @@ public class Login extends AppCompatActivity {
         actionBar.setHomeButtonEnabled(true);
 
         session = new SessionManager(getApplicationContext());
-        session.checkLogin();
+
 
         final IUserAPI api = Repository.getInstance().retrofit.create(IUserAPI.class);
         final EditText username = (EditText) findViewById(R.id.userLogin);
@@ -74,8 +74,8 @@ public class Login extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<User> call, Response<User> response) {
                             User user = response.body();
-                            session.createLoginSession(user.getUserId().toString(),user.getUserName(),user.getUserEmail(),user.getUserBirthDate(), user.getUserSex());
-                            session.updateLevelSession(user.getUserLevel().toString());
+                            session.createLoginSession(user.getUserId(),user.getUserName(),user.getUserEmail(),user.getUserBirthDate(), user.getUserSex());
+                            session.updateLevelSession(user.getUserLevel());
                             Intent intent = new Intent(getApplicationContext(), MyProfile.class);
                             intent.putExtra("ref", user.getUserId().toString());
                             startActivity(intent);

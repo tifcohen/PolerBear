@@ -26,7 +26,6 @@ import com.example.tiferet.polerbear.Repository.Server.TrickForUser;
 
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -63,7 +62,6 @@ public class ProgressFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_progress, container, false);
 
         session = new SessionManager(getActivity().getApplicationContext());
-        HashMap<String, String> user = session.getUserDetails();
 
         trickList = (ListView) view.findViewById(R.id.trickList);
         final TextView trickName = (TextView) view.findViewById(R.id.trickName);
@@ -86,7 +84,7 @@ public class ProgressFragment extends Fragment {
             }
         });
 
-        final Call<List<TrickForUser>> callTrickForUser = api.getTrickInProgress(Integer.parseInt(user.get(SessionManager.KEY_ID)),Integer.parseInt(trickId));
+        final Call<List<TrickForUser>> callTrickForUser = api.getTrickInProgress(session.getUserId(),Integer.parseInt(trickId));
         callTrickForUser.enqueue(new Callback<List<TrickForUser>>() {
             @Override
             public void onResponse(Call<List<TrickForUser>> call, Response<List<TrickForUser>> response) {
