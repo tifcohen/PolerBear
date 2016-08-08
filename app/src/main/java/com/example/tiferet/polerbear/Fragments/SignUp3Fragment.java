@@ -182,15 +182,10 @@ public class SignUp3Fragment extends Fragment {
             }
             final TextView trickName = (TextView) convertView.findViewById(R.id.trickName);
             final CheckBox cb = (CheckBox) convertView.findViewById(R.id.checkbox);
-            /*final TextView bookReview = (TextView) convertView.findViewById(R.id.bookReview);
-            final ImageView stars = (ImageView) convertView.findViewById(R.id.stars);
-            final TextView page = (TextView) convertView.findViewById(R.id.pageTextView);
-            final TextView action = (TextView) convertView.findViewById(R.id.actionTextView);
-            final TextView action2 = (TextView) convertView.findViewById(R.id.action2TextView);
-            final ImageView userProfileImage = (ImageView) convertView.findViewById(R.id.userProfileImage);*/
-
             final Trick trick = tricks.get(position);
             trickName.setText(trick.getTrickName());
+            cb.setTag(position);
+            cb.setChecked(doneBefore.contains(tricks.get(position)));
 
             cb.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -202,6 +197,7 @@ public class SignUp3Fragment extends Fragment {
                     }
                 }
             });
+
             return convertView;
         }
     }
