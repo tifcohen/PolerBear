@@ -3,4 +3,10 @@
     <color name="colorPrimary">#5b0869</color>
     <color name="colorPrimaryDark">#5b0869</color>
     <color name="colorAccent">#5b0869</color>
+    <color name="white">#ffffff</color>
+    <color name="feed_bg">#d3d6db</color>
+    <color name="feed_item_bg">#ffffff</color>
+    <color name="feed_item_border">#c2c3c8</color>
+    <color name="link">#4b0050</color>
+    <color name="timestamp">#a0a3a7</color>
 </resources>

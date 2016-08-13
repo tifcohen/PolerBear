@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
@@ -107,25 +108,30 @@ public class Newsfeed extends AppCompatActivity{
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
+            final ViewHolder viewHolder;
             if (convertView == null) {
                 LayoutInflater inflater = getLayoutInflater();
                 convertView = inflater.inflate(R.layout.global_newsfeed_single_row, null);
+                viewHolder = new ViewHolder();
+                viewHolder.userName = (TextView) convertView.findViewById(R.id.otherUsername);
+                viewHolder.trickName = (TextView) convertView.findViewById(R.id.trickname);
+                viewHolder.trickLevel = (TextView) convertView.findViewById(R.id.level);
+                viewHolder.teachMe = (Button) convertView.findViewById(R.id.teachMeBtn);
+                viewHolder.videoSpinner = (ProgressBar) convertView.findViewById(R.id.videoSpinner);
+                viewHolder.videoview = (VideoView) convertView.findViewById(R.id.trickVideo);
+                viewHolder.userProfileImage = (ImageView) convertView.findViewById(R.id.profilePic);
+
+                convertView.setTag(viewHolder);
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
             }
-            final TextView userName = (TextView) convertView.findViewById(R.id.otherUsername);
-            final TextView trickName = (TextView) convertView.findViewById(R.id.trickname);
-            final TextView trickLevel = (TextView) convertView.findViewById(R.id.level);
-            final Button teachMe = (Button) convertView.findViewById(R.id.teachMeBtn);
-            final ProgressBar videoSpinner = (ProgressBar) convertView.findViewById(R.id.videoSpinner);
-            final VideoView videoview = (VideoView) convertView.findViewById(R.id.trickVideo);
-            /*final TextView action2 = (TextView) convertView.findViewById(R.id.action2TextView);
-            final ImageView userProfileImage = (ImageView) convertView.findViewById(R.id.userProfileImage);*/
 
             TrickForUser trickForUser = trickForUsers.get(position);
-            userName.setText(trickForUser.getUserName());
-            trickName.setText(trickForUser.getTrickName());
-            videoSpinner.setVisibility(View.VISIBLE);
+            viewHolder.userName.setText(trickForUser.getUserName());
+            viewHolder.trickName.setText(trickForUser.getTrickName());
+            viewHolder.videoSpinner.setVisibility(View.VISIBLE);
 
-            userName.setTag(trickForUser);
+            viewHolder.userName.setTag(trickForUser);
 
             ITricksAPI trickAPI = Repository.getInstance().retrofit.create(ITricksAPI.class);
             Call<Trick> callLevel = trickAPI.getTrick(trickForUser.getTrickId());
@@ -133,7 +139,7 @@ public class Newsfeed extends AppCompatActivity{
                 @Override
                 public void onResponse(Call<Trick> call, Response<Trick> response) {
                     Trick trick = response.body();
-                    trickLevel.setText("Level: "+trick.getTrickLevel().toString());
+                    viewHolder.trickLevel.setText("Level: "+trick.getTrickLevel().toString());
                 }
 
                 @Override
@@ -149,29 +155,34 @@ public class Newsfeed extends AppCompatActivity{
                 public void onResponse(Call<String> call, Response<String> response) {
                     final String VideoURL = response.body();
                     if(VideoURL==null){
-                        videoview.setVisibility(View.GONE);
+                        viewHolder.videoview.setVisibility(View.GONE);
+                        viewHolder.videoSpinner.setVisibility(View.GONE);
+                        return;
                     }
+                    viewHolder.videoview.setVisibility(View.VISIBLE);
                     try {
-                        videoSpinner.setVisibility(View.GONE);
+                        viewHolder.videoSpinner.setVisibility(View.VISIBLE);
                         // Start the MediaController
                         MediaController mediacontroller = new MediaController(Newsfeed.this);
-                        mediacontroller.setAnchorView(videoview);
+                        mediacontroller.setAnchorView(viewHolder.videoview);
                         // Get the URL from String VideoURL
+
                         Uri video = Uri.parse(VideoURL);
-                        videoview.setMediaController(mediacontroller);
-                        videoview.setVideoURI(video);
+                        viewHolder.videoview.setMediaController(mediacontroller);
+                        viewHolder.videoview.setVideoURI(video);
 
                     } catch (Exception e) {
                         Log.e("Error", e.getMessage());
                         e.printStackTrace();
                     }
 
-                    videoview.requestFocus();
-                    videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    viewHolder.videoview.requestFocus();
+                    viewHolder.videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                         // Close the progress bar and play the video
                         public void onPrepared(MediaPlayer mp) {
                             //Glide.with(getActivity().getApplicationContext()).load(Uri.fromFile(new File(VideoURL))).into(thumbnail);//TODO
-                            videoview.pause();
+                            viewHolder.videoview.pause();
+                            viewHolder.videoSpinner.setVisibility(View.GONE);
                         }
                     });
                 }
@@ -184,5 +195,16 @@ public class Newsfeed extends AppCompatActivity{
 
             return convertView;
         }
+    }
+
+    static class ViewHolder {
+        TextView userName;
+        TextView trickName;
+        TextView trickLevel;
+        Button teachMe;
+        ProgressBar videoSpinner;
+        VideoView videoview;
+        ImageView userProfileImage;
+
     }
 }

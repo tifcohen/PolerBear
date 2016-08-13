@@ -88,6 +88,7 @@ public class EditProfile extends AppCompatActivity {
                                 profilePic.setImageDrawable(getResources().getDrawable(R.drawable.male));
                             }
                         }else{
+                            Log.d("profile pic in edit before edit", response.body().toString());
                             UrlImageViewHelper.setUrlDrawable(profilePic, response.body());
                         }
                     }

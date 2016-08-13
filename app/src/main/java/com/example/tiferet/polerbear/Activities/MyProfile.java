@@ -42,7 +42,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MyProfile extends AppCompatActivity {
+public class MyProfile extends AppCompatActivity implements View.OnClickListener {
 
     int flag = 0;
     final Context context = this;
@@ -52,6 +52,8 @@ public class MyProfile extends AppCompatActivity {
     final public static int EDIT_PROFILE = 456;
     ListView trickList;
     ImageView profilePic;
+
+    private SubActionButton btnNewTrick;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +68,7 @@ public class MyProfile extends AppCompatActivity {
         final TextView username = (TextView) findViewById(R.id.myProfileUsername);
         final TextView userLevel = (TextView) findViewById(R.id.myProfileLevelView);
         final TextView userFollowers = (TextView) findViewById(R.id.myProfileFollowers);
+        final TextView progressTitle = (TextView) findViewById(R.id.progress_title);
         trickList = (ListView) findViewById(R.id.trickInProgressList);
         final Button followBtn = (Button) findViewById(R.id.followBtn);
         followBtn.setVisibility(View.GONE);
@@ -74,10 +77,11 @@ public class MyProfile extends AppCompatActivity {
         fab.setImageResource(R.drawable.logo_transparent);
 
         final String ref = getIntent().getStringExtra("ref");
-        if(ref!=null) {
+        if (ref != null) {
             if (!ref.equals(session.getUserId().toString())) {
-                flag =1;
+                flag = 1;
                 followBtn.setVisibility(View.VISIBLE);
+                progressTitle.setText(R.string.progress_title_other_profile);
                 IUserAPI otherApi = Repository.getInstance().retrofit.create(IUserAPI.class);
                 Call<User> callOther = otherApi.getUser(Integer.parseInt(ref));
                 callOther.enqueue(new Callback<User>() {
@@ -90,21 +94,22 @@ public class MyProfile extends AppCompatActivity {
                         Log.d("profile", "other's profile! " + other.getUserId());
 
                         final IUserAPI apiUser = Repository.getInstance().retrofit.create(IUserAPI.class);
-                        Call<Boolean> followCall = apiUser.isFollowingList(session.getUserId(),other.getUserId());
+                        Call<Boolean> followCall = apiUser.isFollowingList(session.getUserId(), other.getUserId());
                         followCall.enqueue(new Callback<Boolean>() {
                             @Override
                             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                                if(response.body()){
+                                if (response.body()) {
                                     followBtn.setText("Unfollow");
                                     followBtn.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            Call<Void> unfollow = apiUser.removeFollowingList(session.getUserId(),other.getUserId());
+                                            Call<Void> unfollow = apiUser.removeFollowingList(session.getUserId(), other.getUserId());
                                             unfollow.enqueue(new Callback<Void>() {
                                                 @Override
                                                 public void onResponse(Call<Void> call, Response<Void> response) {
                                                     followBtn.setText("Follow");
-                                                    Toast.makeText(getApplicationContext(),"Unfollow "+other.getUserName(),Toast.LENGTH_SHORT).show();
+
+                                                    Toast.makeText(getApplicationContext(), "Unfollow " + other.getUserName(), Toast.LENGTH_SHORT).show();
                                                 }
 
                                                 @Override
@@ -210,18 +215,12 @@ public class MyProfile extends AppCompatActivity {
                     }
                 });
             }
-        }
-        else {
+        } else {
+            progressTitle.setText(R.string.progress_title_my_profile);
             username.setText(session.getName());
             userLevel.setText("Level: " + session.getLevel());
 
-            //session.logoutUser();
             final IUserAPI apiUser = Repository.getInstance().retrofit.create(IUserAPI.class);
-            //int userId = Integer.parseInt(user.get(SessionManager.KEY_ID));
-            /*if (user.get(SessionManager.KEY_ID).equals(null)){
-                userId=0;
-
-            }*/
             Call<String> picRefCall = apiUser.getUserProfilePicName(session.getUserId().toString());
             picRefCall.enqueue(new Callback<String>() {
                 @Override
@@ -231,13 +230,14 @@ public class MyProfile extends AppCompatActivity {
                     picCall.enqueue(new Callback<String>() {
                         @Override
                         public void onResponse(Call<String> call, Response<String> response) {
-                            if(response.body()==null){
-                                if(session.getSex().equals("Female")){
+                            if (response.body() == null) {
+                                if (session.getSex().equals("Female")) {
                                     profilePic.setImageDrawable(getResources().getDrawable(R.drawable.female));
-                                }else{
+                                } else {
                                     profilePic.setImageDrawable(getResources().getDrawable(R.drawable.male));
                                 }
-                            }else{
+                            } else {
+                                Log.d("profile pic", response.body().toString());
                                 UrlImageViewHelper.setUrlDrawable(profilePic, response.body());
                             }
                         }
@@ -248,6 +248,7 @@ public class MyProfile extends AppCompatActivity {
                         }
                     });
                 }
+
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
                     Log.d("Profile Pic ref", t.getMessage());
@@ -293,8 +294,6 @@ public class MyProfile extends AppCompatActivity {
                     TrickForUser trick = tricks.get(position);
                     Intent intent = new Intent(getApplicationContext(), Progress.class);
                     intent.putExtra("trickId", trick.getTrickId().toString());
-                    //intent.putExtra("trickName", trick.getTrickName());
-                    //startActivity(intent);
                     startActivityForResult(intent, UPDATE_PROGRESS);
                 }
             });
@@ -315,7 +314,7 @@ public class MyProfile extends AppCompatActivity {
         SubActionButton btnNewsfeed = itemBuilder.setContentView(itemIcon1).build();
         SubActionButton btnWarmup = itemBuilder.setContentView(itemIcon2).build();
         SubActionButton btnGallery = itemBuilder.setContentView(itemIcon3).build();
-        SubActionButton btnNewTrick = itemBuilder.setContentView(itemIcon4).build();
+        btnNewTrick = itemBuilder.setContentView(itemIcon4).build();
 
         FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
                 .addSubActionView(btnNewsfeed).addSubActionView(btnWarmup).addSubActionView(btnGallery).addSubActionView(btnNewTrick)
@@ -347,41 +346,7 @@ public class MyProfile extends AppCompatActivity {
             }
         });
 
-        btnNewTrick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-                // set title
-                alertDialogBuilder.setTitle("Add a new trick:");
-                // set dialog message
-                alertDialogBuilder.setMessage("Do you want to do it yourself or let us do it?").setCancelable(false)
-                        .setPositiveButton("Do it!", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                Intent intent = new Intent(getApplicationContext(), NewTrick.class);
-                                intent.putExtra("ref", "Do it!");
-                                startActivity(intent);
-                                Snackbar.make(v, "Do it!", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                            }
-                        })
-                        .setNegativeButton("I'll do it", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                Intent intent = new Intent(getApplicationContext(), NewTrick.class);
-                                intent.putExtra("ref", "I'll do it");
-                                startActivity(intent);
-                                Snackbar.make(v, "I'll do it", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                            }
-                        })
-                        .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                Snackbar.make(v, "Cancel", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                            }
-                        });
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
-                alertDialog.getWindow().setDimAmount(0.5f);
-                alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
-            }
-        });
+        btnNewTrick.setOnClickListener(this);
     }
 
     @Override
@@ -420,8 +385,8 @@ public class MyProfile extends AppCompatActivity {
         MenuItem logout = menu.findItem(R.id.logoutBtn);
         MenuItem edit = menu.findItem(R.id.editBtn);
 
-        if (flag==1) {
-           // myProfile.setEnabled(true);
+        if (flag == 1) {
+            // myProfile.setEnabled(true);
             myProfile.setVisible(true);
             logout.setVisible(false);
             edit.setVisible(false);
@@ -469,13 +434,13 @@ public class MyProfile extends AppCompatActivity {
                     picCall.enqueue(new Callback<String>() {
                         @Override
                         public void onResponse(Call<String> call, Response<String> response) {
-                            if(response.body()==null){
-                                if(session.getSex().equals("Female")){
+                            if (response.body() == null) {
+                                if (session.getSex().equals("Female")) {
                                     profilePic.setImageDrawable(getResources().getDrawable(R.drawable.female));
-                                }else{
+                                } else {
                                     profilePic.setImageDrawable(getResources().getDrawable(R.drawable.male));
                                 }
-                            }else{
+                            } else {
                                 UrlImageViewHelper.setUrlDrawable(profilePic, response.body());
                             }
                         }
@@ -486,6 +451,7 @@ public class MyProfile extends AppCompatActivity {
                         }
                     });
                 }
+
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
                     Log.d("Profile Pic ref", t.getMessage());
@@ -493,6 +459,49 @@ public class MyProfile extends AppCompatActivity {
             });
         }
     }
+
+    @Override
+    public void onClick(View v) {
+        if (v.equals(btnNewTrick)) {
+            addNewTrick(v);
+        } else {}
+    }
+
+
+    private void addNewTrick(final View v) {
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        // set title
+        alertDialogBuilder.setTitle("Add a new trick:");
+        // set dialog message
+        alertDialogBuilder.setMessage("Do you want to do it yourself or let us do it?").setCancelable(false)
+                .setPositiveButton("Do it!", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent intent = new Intent(getApplicationContext(), NewTrick.class);
+                        intent.putExtra("ref", "Do it!");
+                        startActivity(intent);
+                        Snackbar.make(v, "Do it!", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    }
+                })
+                .setNegativeButton("I'll do it", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent intent = new Intent(getApplicationContext(), NewTrick.class);
+                        intent.putExtra("ref", "I'll do it");
+                        startActivity(intent);
+                        Snackbar.make(v, "I'll do it", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    }
+                })
+                .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Snackbar.make(v, "Cancel", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+        alertDialog.getWindow().setDimAmount(0.5f);
+        alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+    }
+
 
 
     class TricksInProgressAdapter extends BaseAdapter {
