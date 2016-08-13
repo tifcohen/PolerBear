@@ -5,10 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/outline">
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
         <LinearLayout
+            android:id="@+id/title"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
@@ -47,19 +45,24 @@
                 android:textColor="@color/colorPrimaryDark"
                 android:focusable="false"/>
         </LinearLayout>
-    </RelativeLayout>
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="5dp"
+    <VideoView
         android:id="@+id/trickVideo"
-        android:src="@drawable/placeholder" />
+        android:layout_width="fill_parent"
+        android:layout_height="250dp"
+        android:layout_below="@+id/title"
+        android:layout_centerHorizontal="true" />
+
+    <ProgressBar
+        android:id="@+id/videoSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true" />
+
     <TextView
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_below="@id/trickVideo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="this is a comment"
         android:id="@+id/comment"/>
 </RelativeLayout>
