@@ -8,17 +8,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <TextView
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
+            android:layout_centerHorizontal="true"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/congrats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Congratulations!" />
+        <TextView
+            android:layout_marginBottom="10dp"
             android:layout_centerHorizontal="true"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/title"
+            android:layout_below="@+id/congrats"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Your level is:" />
         <TextView
             android:layout_centerHorizontal="true"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="30sp"
+            android:textStyle="bold"
             android:id="@+id/setLevel"
             android:layout_above="@+id/logo"
             android:layout_below="@+id/title"
@@ -28,8 +38,8 @@
         <ImageView
             android:id="@+id/logo"
             android:layout_centerInParent="true"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
+            android:layout_width="230dp"
+            android:layout_height="230dp"
             android:src="@drawable/logo_m"/>
         <TextView
             android:layout_above="@+id/finishBtn"

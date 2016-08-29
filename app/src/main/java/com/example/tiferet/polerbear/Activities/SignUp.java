@@ -27,6 +27,7 @@ public class SignUp extends AppCompatActivity implements SignUpFragment.SignUpFr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        getSupportActionBar().setTitle("Sign Up Process");
         //Toolbar toolbar = (Toolbar) findViewById(R.id.signupToolbar);
 
         //this.setSupportActionBar(toolbar);

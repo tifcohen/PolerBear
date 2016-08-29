@@ -38,15 +38,23 @@ public class SignUp4Fragment extends Fragment {
                              Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_sign_up4, container, false);
         Button finishBtn = (Button) view.findViewById(R.id.finishBtn);
+        Button backBtn = (Button) view.findViewById(R.id.backBtn);
         TextView level = (TextView) view.findViewById(R.id.setLevel);
         level.setText(user.getUserLevel().toString());
 
         finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(delegate!=null){
+                if (delegate != null) {
                     delegate.OnMyProfile();
                 }
+            }
+        });
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {//TODO debug!
+                getActivity().finish();
             }
         });
         return view;

@@ -39,6 +39,7 @@ public class Login extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         //actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
+        getSupportActionBar().setTitle(R.string.app_name);
 
         session = new SessionManager(getApplicationContext());
 
