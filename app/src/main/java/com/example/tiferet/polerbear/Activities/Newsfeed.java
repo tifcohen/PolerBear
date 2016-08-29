@@ -23,10 +23,13 @@ import android.widget.VideoView;
 
 import com.example.tiferet.polerbear.API.ITricksAPI;
 import com.example.tiferet.polerbear.API.IUploadFiles;
+import com.example.tiferet.polerbear.API.IUserAPI;
 import com.example.tiferet.polerbear.R;
 import com.example.tiferet.polerbear.Repository.Server.Repository;
 import com.example.tiferet.polerbear.Repository.Server.Trick;
 import com.example.tiferet.polerbear.Repository.Server.TrickForUser;
+import com.example.tiferet.polerbear.Repository.Server.User;
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 
 import java.util.List;
 
@@ -126,7 +129,7 @@ public class Newsfeed extends AppCompatActivity{
                 viewHolder = (ViewHolder) convertView.getTag();
             }
 
-            TrickForUser trickForUser = trickForUsers.get(position);
+            final TrickForUser trickForUser = trickForUsers.get(position);
             viewHolder.userName.setText(trickForUser.getUserName());
             viewHolder.trickName.setText(trickForUser.getTrickName());
             viewHolder.videoSpinner.setVisibility(View.VISIBLE);
@@ -190,6 +193,50 @@ public class Newsfeed extends AppCompatActivity{
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
                     Log.d("show video", t.getMessage());
+                }
+            });
+
+            final IUserAPI apiUser = Repository.getInstance().retrofit.create(IUserAPI.class);
+            Call<String> picRefCall = apiUser.getUserProfilePicName(trickForUser.getUserId().toString());
+            picRefCall.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    final IUploadFiles apiPic = Repository.getInstance().retrofit.create(IUploadFiles.class);
+                    Call<String> picCall = apiPic.getFile(response.body());
+                    picCall.enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            if (response.body() == null) {
+                                Call<User> userCall = apiUser.getUser(trickForUser.getUserId());
+                                userCall.enqueue(new Callback<User>() {
+                                    @Override
+                                    public void onResponse(Call<User> call, Response<User> response) {
+                                        if (response.body().getUserSex().equals("Female")) {
+                                            viewHolder.userProfileImage.setImageDrawable(getResources().getDrawable(R.drawable.female));
+                                        } else {
+                                            viewHolder.userProfileImage.setImageDrawable(getResources().getDrawable(R.drawable.male));
+                                        }
+                                    }
+                                    @Override
+                                    public void onFailure(Call<User> call, Throwable t) {
+
+                                    }
+                                });
+                            } else {
+                                UrlImageViewHelper.setUrlDrawable( viewHolder.userProfileImage, response.body());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+                            Log.d("Profile Pic", t.getMessage());
+                        }
+                    });
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    Log.d("Profile Pic ref", t.getMessage());
                 }
             });
 

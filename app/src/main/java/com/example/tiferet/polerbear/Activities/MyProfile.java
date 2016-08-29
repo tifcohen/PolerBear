@@ -89,6 +89,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                     public void onResponse(Call<User> call, Response<User> response) {
                         final User other = response.body();
                         fab.setVisibility(View.GONE);
+                        getSupportActionBar().setTitle(other.getUserName()+"'s Profile");
                         username.setText(other.getUserName());
                         userLevel.setText("Level: " + other.getUserLevel());
                         Log.d("profile", "other's profile! " + other.getUserId());
@@ -502,7 +503,48 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
     }
 
-
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        //final String ref = getIntent().getStringExtra("ref");
+//        //if (ref != null) {
+//         //   if (ref.equals("edit")) {
+//                IUserAPI apiUser = Repository.getInstance().retrofit.create(IUserAPI.class);
+//                Call<String> picRefCall = apiUser.getUserProfilePicName(session.getUserId().toString());
+//                picRefCall.enqueue(new Callback<String>() {
+//                    @Override
+//                    public void onResponse(Call<String> call, Response<String> response) {
+//                        final IUploadFiles apiPic = Repository.getInstance().retrofit.create(IUploadFiles.class);
+//                        Call<String> picCall = apiPic.getFile(response.body());
+//                        picCall.enqueue(new Callback<String>() {
+//                            @Override
+//                            public void onResponse(Call<String> call, Response<String> response) {
+//                                if (response.body() == null) {
+//                                    if (session.getSex().equals("Female")) {
+//                                        profilePic.setImageDrawable(getResources().getDrawable(R.drawable.female));
+//                                    } else {
+//                                        profilePic.setImageDrawable(getResources().getDrawable(R.drawable.male));
+//                                    }
+//                                } else {
+//                                    UrlImageViewHelper.setUrlDrawable(profilePic, response.body());
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onFailure(Call<String> call, Throwable t) {
+//                                Log.d("Profile Pic", t.getMessage());
+//                            }
+//                        });
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<String> call, Throwable t) {
+//                        Log.d("Profile Pic ref", t.getMessage());
+//                    }
+//                });
+//         //   }
+//        //}
+//    }
 
     class TricksInProgressAdapter extends BaseAdapter {
 
@@ -532,13 +574,6 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
             }
             final TextView trickName = (TextView) convertView.findViewById(R.id.trickName);
             final TextView sinceDate = (TextView) convertView.findViewById(R.id.sinceDate);
-            /*final TextView bookReview = (TextView) convertView.findViewById(R.id.bookReview);
-            final ImageView stars = (ImageView) convertView.findViewById(R.id.stars);
-            final TextView page = (TextView) convertView.findViewById(R.id.pageTextView);
-            final TextView action = (TextView) convertView.findViewById(R.id.actionTextView);
-            final TextView action2 = (TextView) convertView.findViewById(R.id.action2TextView);
-            final ImageView userProfileImage = (ImageView) convertView.findViewById(R.id.userProfileImage);*/
-
             TrickForUser trick = tricks.get(position);
             trickName.setText(trick.getTrickName());
             sinceDate.setText(trick.getDate());

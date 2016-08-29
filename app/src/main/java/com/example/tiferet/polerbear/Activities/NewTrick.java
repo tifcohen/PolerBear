@@ -61,9 +61,10 @@ public class NewTrick extends AppCompatActivity {
 
         String ref = getIntent().getStringExtra("ref");
         if(ref.equals("warmup")){
+            getSupportActionBar().setTitle("Warmup");
             videoview.setVisibility(View.GONE);
             trickLevel.setVisibility(View.GONE);
-            trickName.setText("Warmup");
+            trickName.setText("It is highly important to warm up before the workout!");
             message.setText("Coming soon!");
             message.setVisibility(View.VISIBLE);
             addBtn.setVisibility(View.GONE);

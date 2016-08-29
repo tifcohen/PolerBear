@@ -38,7 +38,7 @@ import retrofit2.Response;
 
 public class EditProfile extends AppCompatActivity {
     private static final int PICK_IMAGE_ID = 234; // the number doesn't matter
-
+    final public static int EDIT_PROFILE = 456;
     ImageView profilePic;
     String[] sexPickerDropdown = new String[]{"Male", "Female"};
     SessionManager session;
@@ -88,7 +88,6 @@ public class EditProfile extends AppCompatActivity {
                                 profilePic.setImageDrawable(getResources().getDrawable(R.drawable.male));
                             }
                         }else{
-                            Log.d("profile pic in edit before edit", response.body().toString());
                             UrlImageViewHelper.setUrlDrawable(profilePic, response.body());
                         }
                     }
@@ -134,7 +133,9 @@ public class EditProfile extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         session.updateSession(updatedUser.getUserBirthDate(), updatedUser.getUserSex());
-                        onBackPressed();
+                        Intent updatedProfile = new Intent();
+                        setResult(EDIT_PROFILE, updatedProfile);
+                     //   onBackPressed();
                         finish();
                     }
 
