@@ -1,6 +1,5 @@
 package com.example.tiferet.polerbear.Activities;
 
-import android.app.FragmentManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -80,16 +79,9 @@ public class Gallery extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
-        switch (item.getItemId()) { /// TODO!!!
+        switch (item.getItemId()) {
             case android.R.id.home:
-                FragmentManager fm = getFragmentManager();
-                if (fm.getBackStackEntryCount() > 0) {
-                    fm.popBackStack();
-                }
-                else{
-                    onBackPressed();
-                }
-                break;
+                onBackPressed();
         }
         return true;
     }

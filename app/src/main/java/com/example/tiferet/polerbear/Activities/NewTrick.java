@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.MediaController;
@@ -46,6 +48,9 @@ public class NewTrick extends AppCompatActivity {
         setContentView(R.layout.activity_new_trick);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
 
         final String VideoURL;
         session = new SessionManager(getApplicationContext());
@@ -77,6 +82,7 @@ public class NewTrick extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<Trick> call, Response<Trick> response) {
                     final Trick trick = response.body();
+                    getSupportActionBar().setTitle(R.string.title_activity_new_trick+": "+trick.getTrickName());
                     trickName.setText(trick.getTrickName());
                     trickLevel.setText("Level: "+trick.getTrickLevel());
                     playVideo(trick.getTrickVideoName());
@@ -182,5 +188,15 @@ public class NewTrick extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+        }
+        return true;
     }
 }

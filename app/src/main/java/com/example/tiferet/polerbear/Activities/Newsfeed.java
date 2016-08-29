@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -26,6 +28,7 @@ import com.example.tiferet.polerbear.API.IUploadFiles;
 import com.example.tiferet.polerbear.API.IUserAPI;
 import com.example.tiferet.polerbear.R;
 import com.example.tiferet.polerbear.Repository.Server.Repository;
+import com.example.tiferet.polerbear.Repository.Server.SessionManager;
 import com.example.tiferet.polerbear.Repository.Server.Trick;
 import com.example.tiferet.polerbear.Repository.Server.TrickForUser;
 import com.example.tiferet.polerbear.Repository.Server.User;
@@ -42,6 +45,8 @@ public class Newsfeed extends AppCompatActivity{
     List<TrickForUser> trickForUsers;
     ProgressBar spinner;
     ListView usersList;
+    String currentFeed;
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,22 +54,69 @@ public class Newsfeed extends AppCompatActivity{
         setContentView(R.layout.activity_newsfeed);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "Global", Toast.LENGTH_SHORT).show();
-                Log.d("TAG", "fab pressed");
-            }
-        });
+        currentFeed = "Global";
+
         usersList = (ListView) findViewById(R.id.newsFeedList);
         spinner = (ProgressBar) findViewById(R.id.spinner);
+        switchFeed();
+    }
 
+    public void onClickUsername(View v) {
+        TrickForUser user = (TrickForUser) v.getTag();
+        Intent intent = new Intent(getApplicationContext(), MyProfile.class);
+        intent.putExtra("ref", user.getUserId().toString());
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intent = new Intent(getApplicationContext(), MyProfile.class);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.replace_newsfeed:
+                switch (currentFeed){
+                    case "Global":
+                        currentFeed = "Personal";
+                        break;
+                    case "Personal":
+                        currentFeed = "Global";
+                        break;
+                }
+                switchFeed();
+                break;
+        }
+        return true;
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_newsfeed, menu);
+        return true;
+    }
+
+    private void switchFeed(){
         spinner.setVisibility(View.VISIBLE);
 
+        Toast.makeText(getApplicationContext(), currentFeed, Toast.LENGTH_SHORT).show();
+        session = new SessionManager(getApplicationContext());
+
         ITricksAPI apiTrick = Repository.getInstance().retrofit.create(ITricksAPI.class);
-        Call<List<TrickForUser>> trickCall = apiTrick.getAllTricksForUsers();
+        Call<List<TrickForUser>> trickCall;
+
+        if(currentFeed.equals("Personal")){
+            trickCall = apiTrick.getAllTricksForFollowingUsers(session.getUserId());
+        }
+        else{
+            trickCall = apiTrick.getAllTricksForUsers();
+        }
 
         trickCall.enqueue(new Callback<List<TrickForUser>>() {
             @Override
@@ -82,12 +134,8 @@ public class Newsfeed extends AppCompatActivity{
         });
     }
 
-    public void onClickUsername(View v) {
-        TrickForUser user = (TrickForUser) v.getTag();
-        Intent intent = new Intent(getApplicationContext(), MyProfile.class);
-        intent.putExtra("ref", user.getUserId().toString());
-        startActivity(intent);
-    }
+
+
 
     class NewsfeedAdapter extends BaseAdapter {
 
