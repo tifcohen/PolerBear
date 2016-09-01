@@ -104,12 +104,11 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                                     followBtn.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
+                                            followBtn.setText("Follow");
                                             Call<Void> unfollow = apiUser.removeFollowingList(session.getUserId(), other.getUserId());
                                             unfollow.enqueue(new Callback<Void>() {
                                                 @Override
                                                 public void onResponse(Call<Void> call, Response<Void> response) {
-                                                    followBtn.setText("Follow");
-
                                                     Toast.makeText(getApplicationContext(), "Unfollow " + other.getUserName(), Toast.LENGTH_SHORT).show();
                                                 }
 
@@ -118,11 +117,19 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
 
                                                 }
                                             });
+                                        }
+                                    });
+                                }
+                                else{
+                                    followBtn.setText("Follow");
+                                    followBtn.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            followBtn.setText("Unfollow");
                                             Call<Void> follow = apiUser.addToFollowingList(session.getUserId(), other.getUserId());
                                             follow.enqueue(new Callback<Void>() {
                                                 @Override
                                                 public void onResponse(Call<Void> call, Response<Void> response) {
-                                                    followBtn.setText("Unfollow");
                                                     Toast.makeText(getApplicationContext(), "Following " + other.getUserName(), Toast.LENGTH_SHORT).show();
                                                 }
 
@@ -133,6 +140,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                                             });
                                         }
                                     });
+
                                 }
                             }
 
@@ -179,11 +187,9 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                         callTrickForUser.enqueue(new Callback<List<TrickForUser>>() {
                             @Override
                             public void onResponse(Call<List<TrickForUser>> call, Response<List<TrickForUser>> response) {
-/*                              #TODO gallery for the other user
                                 tricks = response.body();
                                 TricksInProgressAdapter adapter = new TricksInProgressAdapter();
                                 trickList.setAdapter(adapter);
-                                //spinner.setVisibility(View.GONE);*/
                             }
 
                             @Override
@@ -191,7 +197,6 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                                 Log.d("TAG", "failed to fetch tricks");
                             }
                         });
-                        trickList = (ListView) findViewById(R.id.galleryList);
                         final Call<Integer> callUser = apiUser.getFollowersCount(other.getUserId());
                         callUser.enqueue(new Callback<Integer>() {
                             @Override
