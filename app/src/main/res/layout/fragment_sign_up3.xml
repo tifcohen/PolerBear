@@ -44,6 +44,11 @@
                 android:divider="@android:color/transparent"
                 android:dividerHeight="10.0sp">
             </ListView>
+            <ProgressBar
+                android:id="@+id/progBar"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_centerInParent="true"/>
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"

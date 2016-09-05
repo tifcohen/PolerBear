@@ -23,6 +23,9 @@ public interface ITricksAPI {
     @GET("/getTrick")
     Call<Trick> getTrick(@Query("trickId") int trickId);
 
+    @GET("/checkLevelGetTrick")
+    Call<Trick> checkLevelGetTrick(@Query("user") int userId, @Query("trick") int trickId);
+
     //get all the trick in progress for user
     @GET("/getInProgress")
     Call<List<TrickForUser>> getInProgress(@Query("user") int userId);

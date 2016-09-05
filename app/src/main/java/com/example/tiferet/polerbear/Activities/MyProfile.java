@@ -187,6 +187,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                         callTrickForUser.enqueue(new Callback<List<TrickForUser>>() {
                             @Override
                             public void onResponse(Call<List<TrickForUser>> call, Response<List<TrickForUser>> response) {
+                              //TODO gallery for the other user
                                 tricks = response.body();
                                 TricksInProgressAdapter adapter = new TricksInProgressAdapter();
                                 trickList.setAdapter(adapter);

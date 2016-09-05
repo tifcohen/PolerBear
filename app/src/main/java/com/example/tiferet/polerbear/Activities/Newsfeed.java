@@ -96,6 +96,14 @@ public class Newsfeed extends AppCompatActivity{
         return true;
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem switchFeed = menu.findItem(R.id.replace_newsfeed);
+        switchFeed.setIcon(R.drawable.replace_feed);
+        switchFeed.setVisible(true);
+        return true;
+    }
+
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_newsfeed, menu);
@@ -183,6 +191,10 @@ public class Newsfeed extends AppCompatActivity{
             viewHolder.videoSpinner.setVisibility(View.VISIBLE);
 
             viewHolder.userName.setTag(trickForUser);
+
+            if(trickForUser.getUserId()==session.getUserId()){
+                viewHolder.teachMe.setVisibility(View.GONE);
+            }
 
             ITricksAPI trickAPI = Repository.getInstance().retrofit.create(ITricksAPI.class);
             Call<Trick> callLevel = trickAPI.getTrick(trickForUser.getTrickId());
@@ -288,6 +300,15 @@ public class Newsfeed extends AppCompatActivity{
                 }
             });
 
+            viewHolder.teachMe.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplicationContext(), NewTrick.class);
+                    intent.putExtra("ref", "I\'ll do it");
+                    intent.putExtra("trickId", trickForUser.getTrickId()+"");
+                    startActivity(intent);
+                }
+            });
             return convertView;
         }
     }

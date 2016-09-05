@@ -3,7 +3,6 @@
 
     <item
         android:id="@+id/replace_newsfeed"
-        android:orderInCategory="100"
         android:visible="true"
         android:title="Replace"
         android:icon="@drawable/replace_feed"
