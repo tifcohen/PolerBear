@@ -78,7 +78,6 @@ public class Login extends AppCompatActivity {
                             session.createLoginSession(user.getUserId(),user.getUserName(),user.getUserEmail(),user.getUserBirthDate(), user.getUserSex());
                             session.updateLevelSession(user.getUserLevel());
                             Intent intent = new Intent(getApplicationContext(), MyProfile.class);
-                            intent.putExtra("ref", user.getUserId().toString());
                             startActivity(intent);
                             finish();
                             loginPB.setVisibility(View.GONE);

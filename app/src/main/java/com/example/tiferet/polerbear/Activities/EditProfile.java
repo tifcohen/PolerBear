@@ -135,8 +135,15 @@ public class EditProfile extends AppCompatActivity {
                         session.updateSession(updatedUser.getUserBirthDate(), updatedUser.getUserSex());
                         Intent updatedProfile = new Intent();
                         setResult(EDIT_PROFILE, updatedProfile);
-                     //   onBackPressed();
-                        finish();
+
+                        // update image if need
+                        if (bitmap!=null && flag==1){
+                            File file = persistImage(bitmap, "name");
+                            updateImageToServer(file, session.getUserId());
+                        } else {
+                            finish();
+                        }
+
                     }
 
                     @Override
@@ -144,10 +151,7 @@ public class EditProfile extends AppCompatActivity {
 
                     }
                 });
-                if (bitmap!=null && flag==1){
-                    File file = persistImage(bitmap, "name");
-                    updateImageToServer(file, session.getUserId());
-                }
+
             }
         });
 
@@ -186,6 +190,7 @@ public class EditProfile extends AppCompatActivity {
             public void onResponse(Call<ResponseBody> call,
                                    Response<ResponseBody> response) {
                 Log.v("Upload", "success");
+                finish();
             }
 
             @Override

@@ -98,9 +98,9 @@ public class Newsfeed extends AppCompatActivity{
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem switchFeed = menu.findItem(R.id.replace_newsfeed);
-        switchFeed.setIcon(R.drawable.replace_feed);
-        switchFeed.setVisible(true);
+        MenuItem replaceFeed = menu.findItem(R.id.replace_newsfeed);
+        replaceFeed.setIcon(R.drawable.replace_feed);
+        replaceFeed.setVisible(true);
         return true;
     }
 

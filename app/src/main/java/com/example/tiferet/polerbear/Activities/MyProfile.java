@@ -53,6 +53,11 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
     ListView trickList;
     ImageView profilePic;
 
+    private TextView username;
+    private TextView userLevel;
+    private TextView userFollowers;
+    private TextView progressTitle;
+
     private SubActionButton btnNewTrick;
 
     @Override
@@ -65,10 +70,10 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         session = new SessionManager(getApplicationContext());
         //session.checkLogin();
         profilePic = (ImageView) findViewById(R.id.myProfilePicture);
-        final TextView username = (TextView) findViewById(R.id.myProfileUsername);
-        final TextView userLevel = (TextView) findViewById(R.id.myProfileLevelView);
-        final TextView userFollowers = (TextView) findViewById(R.id.myProfileFollowers);
-        final TextView progressTitle = (TextView) findViewById(R.id.progress_title);
+        username = (TextView) findViewById(R.id.myProfileUsername);
+        userLevel = (TextView) findViewById(R.id.myProfileLevelView);
+        userFollowers = (TextView) findViewById(R.id.myProfileFollowers);
+        progressTitle = (TextView) findViewById(R.id.progress_title);
         trickList = (ListView) findViewById(R.id.trickInProgressList);
         final Button followBtn = (Button) findViewById(R.id.followBtn);
         followBtn.setVisibility(View.GONE);
@@ -223,87 +228,7 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
                 });
             }
         } else {
-            progressTitle.setText(R.string.progress_title_my_profile);
-            username.setText(session.getName());
-            userLevel.setText("Level: " + session.getLevel());
-
-            final IUserAPI apiUser = Repository.getInstance().retrofit.create(IUserAPI.class);
-            Call<String> picRefCall = apiUser.getUserProfilePicName(session.getUserId().toString());
-            picRefCall.enqueue(new Callback<String>() {
-                @Override
-                public void onResponse(Call<String> call, Response<String> response) {
-                    final IUploadFiles apiPic = Repository.getInstance().retrofit.create(IUploadFiles.class);
-                    Call<String> picCall = apiPic.getFile(response.body());
-                    picCall.enqueue(new Callback<String>() {
-                        @Override
-                        public void onResponse(Call<String> call, Response<String> response) {
-                            if (response.body() == null) {
-                                if (session.getSex().equals("Female")) {
-                                    profilePic.setImageDrawable(getResources().getDrawable(R.drawable.female));
-                                } else {
-                                    profilePic.setImageDrawable(getResources().getDrawable(R.drawable.male));
-                                }
-                            } else {
-                                Log.d("profile pic", response.body().toString());
-                                UrlImageViewHelper.setUrlDrawable(profilePic, response.body());
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<String> call, Throwable t) {
-                            Log.d("Profile Pic", t.getMessage());
-                        }
-                    });
-                }
-
-                @Override
-                public void onFailure(Call<String> call, Throwable t) {
-                    Log.d("Profile Pic ref", t.getMessage());
-                }
-            });
-            final Call<Integer> callUser = apiUser.getFollowersCount(session.getUserId());
-            callUser.enqueue(new Callback<Integer>() {
-                @Override
-                public void onResponse(Call<Integer> call, Response<Integer> response) {
-                    if (response.body() == null) {
-                        userFollowers.setText("You don't have any followers");
-                    } else {
-                        userFollowers.setText(response.body() + " Followers");
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Integer> call, Throwable t) {
-
-                }
-            });
-            ITricksAPI apiTrick = Repository.getInstance().retrofit.create(ITricksAPI.class);
-            Call<List<TrickForUser>> trickCall = apiTrick.getInProgress(session.getUserId());
-
-            trickCall.enqueue(new Callback<List<TrickForUser>>() {
-                @Override
-                public void onResponse(Call<List<TrickForUser>> call, Response<List<TrickForUser>> response) {
-                    tricks = response.body();
-                    TricksInProgressAdapter adapter = new TricksInProgressAdapter();
-                    trickList.setAdapter(adapter);
-                }
-
-                @Override
-                public void onFailure(Call<List<TrickForUser>> call, Throwable t) {
-
-                }
-            });
-
-            trickList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Log.d("My Profile", "row selected " + position);
-                    TrickForUser trick = tricks.get(position);
-                    Intent intent = new Intent(getApplicationContext(), Progress.class);
-                    intent.putExtra("trickId", trick.getTrickId().toString());
-                    startActivityForResult(intent, UPDATE_PROGRESS);
-                }
-            });
+            //updateMyProfileData();
 
         }
 
@@ -509,48 +434,16 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
         alertDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        //final String ref = getIntent().getStringExtra("ref");
-//        //if (ref != null) {
-//         //   if (ref.equals("edit")) {
-//                IUserAPI apiUser = Repository.getInstance().retrofit.create(IUserAPI.class);
-//                Call<String> picRefCall = apiUser.getUserProfilePicName(session.getUserId().toString());
-//                picRefCall.enqueue(new Callback<String>() {
-//                    @Override
-//                    public void onResponse(Call<String> call, Response<String> response) {
-//                        final IUploadFiles apiPic = Repository.getInstance().retrofit.create(IUploadFiles.class);
-//                        Call<String> picCall = apiPic.getFile(response.body());
-//                        picCall.enqueue(new Callback<String>() {
-//                            @Override
-//                            public void onResponse(Call<String> call, Response<String> response) {
-//                                if (response.body() == null) {
-//                                    if (session.getSex().equals("Female")) {
-//                                        profilePic.setImageDrawable(getResources().getDrawable(R.drawable.female));
-//                                    } else {
-//                                        profilePic.setImageDrawable(getResources().getDrawable(R.drawable.male));
-//                                    }
-//                                } else {
-//                                    UrlImageViewHelper.setUrlDrawable(profilePic, response.body());
-//                                }
-//                            }
-//
-//                            @Override
-//                            public void onFailure(Call<String> call, Throwable t) {
-//                                Log.d("Profile Pic", t.getMessage());
-//                            }
-//                        });
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<String> call, Throwable t) {
-//                        Log.d("Profile Pic ref", t.getMessage());
-//                    }
-//                });
-//         //   }
-//        //}
-//    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        final String ref = getIntent().getStringExtra("ref");
+        if (ref == null) {
+            updateMyProfileData();
+        }
+    }
 
     class TricksInProgressAdapter extends BaseAdapter {
 
@@ -587,4 +480,91 @@ public class MyProfile extends AppCompatActivity implements View.OnClickListener
             return convertView;
         }
     }
+
+
+    private void updateMyProfileData() {
+        progressTitle.setText(R.string.progress_title_my_profile);
+        username.setText(session.getName());
+        userLevel.setText("Level: " + session.getLevel());
+
+        final IUserAPI apiUser = Repository.getInstance().retrofit.create(IUserAPI.class);
+        Call<String> picRefCall = apiUser.getUserProfilePicName(session.getUserId().toString());
+        picRefCall.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                final IUploadFiles apiPic = Repository.getInstance().retrofit.create(IUploadFiles.class);
+                Call<String> picCall = apiPic.getFile(response.body());
+                picCall.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        if (response.body() == null) {
+                            if (session.getSex().equals("Female")) {
+                                profilePic.setImageDrawable(getResources().getDrawable(R.drawable.female));
+                            } else {
+                                profilePic.setImageDrawable(getResources().getDrawable(R.drawable.male));
+                            }
+                        } else {
+                            Log.d("profile pic", response.body().toString());
+                            UrlImageViewHelper.setUrlDrawable(profilePic, response.body());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        Log.d("Profile Pic", t.getMessage());
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.d("Profile Pic ref", t.getMessage());
+            }
+        });
+        final Call<Integer> callUser = apiUser.getFollowersCount(session.getUserId());
+        callUser.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.body() == null) {
+                    userFollowers.setText("You don't have any followers");
+                } else {
+                    userFollowers.setText(response.body() + " Followers");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+
+            }
+        });
+        ITricksAPI apiTrick = Repository.getInstance().retrofit.create(ITricksAPI.class);
+        Call<List<TrickForUser>> trickCall = apiTrick.getInProgress(session.getUserId());
+
+        trickCall.enqueue(new Callback<List<TrickForUser>>() {
+            @Override
+            public void onResponse(Call<List<TrickForUser>> call, Response<List<TrickForUser>> response) {
+                tricks = response.body();
+                TricksInProgressAdapter adapter = new TricksInProgressAdapter();
+                trickList.setAdapter(adapter);
+            }
+
+            @Override
+            public void onFailure(Call<List<TrickForUser>> call, Throwable t) {
+
+            }
+        });
+
+        trickList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("My Profile", "row selected " + position);
+                TrickForUser trick = tricks.get(position);
+                Intent intent = new Intent(getApplicationContext(), Progress.class);
+                intent.putExtra("trickId", trick.getTrickId().toString());
+                startActivityForResult(intent, UPDATE_PROGRESS);
+            }
+        });
+    }
+
+
 }
