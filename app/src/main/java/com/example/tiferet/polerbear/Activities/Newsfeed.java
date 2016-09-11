@@ -34,6 +34,8 @@ import com.example.tiferet.polerbear.Repository.Server.TrickForUser;
 import com.example.tiferet.polerbear.Repository.Server.User;
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -133,6 +135,13 @@ public class Newsfeed extends AppCompatActivity{
                 NewsfeedAdapter adapter = new NewsfeedAdapter();
                 usersList.setAdapter(adapter);
                 spinner.setVisibility(View.GONE);
+
+                Collections.sort(trickForUsers, new Comparator<TrickForUser>() {
+                    public int compare(TrickForUser t1, TrickForUser t2) {
+                        return t2.getDate().compareTo(t1.getDate());
+                    }
+                });
+
             }
 
             @Override
