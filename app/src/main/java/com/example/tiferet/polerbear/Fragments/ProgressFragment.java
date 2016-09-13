@@ -97,7 +97,7 @@ public class ProgressFragment extends Fragment {
                         return t2.getDate().compareTo(t1.getDate());
                     }
                 });
-                sinceDate.setText("Started on: "+tricks.get(0).getDate());
+                sinceDate.setText("Started on: "+tricks.get(tricks.size()-1).getDate());
             }
 
             @Override

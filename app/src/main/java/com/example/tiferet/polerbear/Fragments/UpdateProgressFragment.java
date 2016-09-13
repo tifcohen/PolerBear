@@ -69,6 +69,7 @@ public class UpdateProgressFragment extends Fragment {
 
     String userId;
     String trickId;
+    ProgressBar progressBar;
 
     public void setDelegate(UpdateProgressFragment delegate) {
         this.delegate = delegate;
@@ -93,7 +94,7 @@ public class UpdateProgressFragment extends Fragment {
 
         session = new SessionManager(getActivity().getApplicationContext());
 
-        final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         Button saveBtn = (Button) view.findViewById(R.id.saveBtn);
         Button cancelBtn = (Button) view.findViewById(R.id.cancelBtn);
         Button upload = (Button) view.findViewById(R.id.uploadBtn);
@@ -161,7 +162,6 @@ public class UpdateProgressFragment extends Fragment {
                     @Override
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         Toast.makeText(getContext(), "Progress updated successfully", Toast.LENGTH_SHORT).show();
-                        progressBar.setVisibility(View.GONE);
                         getActivity().onBackPressed();
                     }
 
@@ -270,7 +270,7 @@ public class UpdateProgressFragment extends Fragment {
             @Override
             public void onResponse(Call<ResponseBody> call,
                                    Response<ResponseBody> response) {
-//                Toast.makeText(getActivity().getApplicationContext(), "Video uploaded successfully", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(getActivity().getApplicationContext(), "Video uploaded successfully", Toast.LENGTH_SHORT).show();
                 Log.v("Upload", "success");
             }
 
